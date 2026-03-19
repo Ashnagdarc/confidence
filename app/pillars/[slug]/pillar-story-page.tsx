@@ -104,10 +104,10 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
             <Link href="/#blog">Blog</Link>
           </li>
           <li>
-            <Link href="/#contact">Contact</Link>
+            <Link href="/contact">Contact</Link>
           </li>
         </ul>
-        <Link href="/#contact" className="nav-cta">
+        <Link href="/contact" className="nav-cta">
           Let&apos;s Connect
         </Link>
         <button
@@ -138,11 +138,11 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
           <Link href="/#blog" onClick={() => setMobileNavOpen(false)}>
             Blog
           </Link>
-          <Link href="/#contact" onClick={() => setMobileNavOpen(false)}>
+          <Link href="/contact" onClick={() => setMobileNavOpen(false)}>
             Contact
           </Link>
           <Link
-            href="/#contact"
+            href="/contact"
             className="mobile-nav-cta"
             onClick={() => setMobileNavOpen(false)}
           >
@@ -264,7 +264,7 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
               <Link href="/#pillars" className="btn-primary">
                 View all seven pillars
               </Link>
-              <Link href="/#contact" className="pillar-ghost-button">
+              <Link href="/contact" className="pillar-ghost-button">
                 Invite Confidence to speak
               </Link>
             </div>

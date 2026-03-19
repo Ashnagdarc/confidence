@@ -34,11 +34,6 @@ type Article = {
   cta: string;
 };
 
-type SocialLink = {
-  label: string;
-  href: string;
-};
-
 type FadeUpProps = {
   children: ReactNode;
   className?: string;
@@ -146,25 +141,6 @@ const articles: Article[] = [
   },
 ];
 
-const socials: SocialLink[] = [
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/achodoconfidence_realtor/",
-  },
-  {
-    label: "Podcast",
-    href: "https://podcasts.apple.com/ng/podcast/the-kk-show-key-to-keys/id1761369506",
-  },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/confidence-achodo-b82b65a4/",
-  },
-  {
-    label: "Twitter / X",
-    href: "https://x.com/achodoconfidenc",
-  },
-];
-
 const heroPortrait = "https://www.figma.com/api/mcp/asset/69c81a87-4ca0-4125-84e8-d87a3d244a27";
 const heroStatusDot = "https://www.figma.com/api/mcp/asset/7553c5d2-1dc2-486a-9587-7e574910a34c";
 
@@ -195,7 +171,6 @@ function FadeUp({ children, className = "" }: FadeUpProps) {
 export default function Home() {
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -308,12 +283,12 @@ export default function Home() {
             <a href="#blog">Blog</a>
           </li>
           <li>
-            <a href="#contact">Contact</a>
+            <Link href="/contact">Contact</Link>
           </li>
         </ul>
-        <a href="#contact" className="nav-cta">
+        <Link href="/contact" className="nav-cta">
           Let&apos;s Connect
-        </a>
+        </Link>
         <button
           type="button"
           className="mobile-nav-toggle"
@@ -342,16 +317,16 @@ export default function Home() {
           <a href="#blog" onClick={() => setMobileNavOpen(false)}>
             Blog
           </a>
-          <a href="#contact" onClick={() => setMobileNavOpen(false)}>
+          <Link href="/contact" onClick={() => setMobileNavOpen(false)}>
             Contact
-          </a>
-          <a
-            href="#contact"
+          </Link>
+          <Link
+            href="/contact"
             className="mobile-nav-cta"
             onClick={() => setMobileNavOpen(false)}
           >
             Let&apos;s Connect
-          </a>
+          </Link>
         </div>
       </nav>
 
@@ -403,9 +378,9 @@ export default function Home() {
               </h1>
             </div>
 
-            <a href="#contact" className={heroStyles.mobileHeroCta}>
+            <Link href="/contact" className={heroStyles.mobileHeroCta}>
               Let&apos;s Connect
-            </a>
+            </Link>
           </div>
         </section>
 
@@ -533,9 +508,9 @@ inside it.
                 deals, through sleepless nights and morning devotionals, through
                 platforms won and rooms entered wearing heels and conviction.
               </p>
-              <a href="#contact" className="btn-primary pillar-detail-cta">
+              <Link href="/contact" className="btn-primary pillar-detail-cta">
                 Invite Her to Speak
-              </a>
+              </Link>
             </div>
             <div className="pillar-detail-card">
               <p className="pillar-detail-mark" aria-hidden="true">
@@ -561,9 +536,9 @@ inside it.
                 Ventures
               </h2>
             </div>
-            <a href="#contact" className="btn-primary">
+            <Link href="/contact" className="btn-primary">
               Partner With Me
-            </a>
+            </Link>
           </FadeUp>
 
           <FadeUp className="works-grid">
@@ -594,9 +569,9 @@ inside it.
                 Worth Having
               </h2>
             </div>
-            <a href="#contact" className="btn-ghost">
+            <Link href="/contact" className="btn-ghost">
               All Articles <span aria-hidden="true">→</span>
-            </a>
+            </Link>
           </FadeUp>
 
           <FadeUp className="blog-grid">
@@ -605,151 +580,14 @@ inside it.
                 <p className="blog-date">{article.category}</p>
                 <h3 className="blog-title">{article.title}</h3>
                 <p className="blog-excerpt">{article.excerpt}</p>
-                <a href="#contact" className="read-more">
+                <Link href="/contact" className="read-more">
                   {article.cta}
-                </a>
+                </Link>
               </article>
             ))}
           </FadeUp>
         </section>
-
-        <section id="contact" data-scroll-section>
-          <div className="contact-bg-text" aria-hidden="true">
-            C
-          </div>
-          <div className="contact-inner">
-            <p className="section-eyebrow">Let&apos;s Connect</p>
-            <h2 className="h2-xl contact-title">
-              Ready to Build
-              <br />
-              <em className="gold-italic">Something Lasting?</em>
-            </h2>
-
-            <div className="contact-grid">
-              <div>
-                <div className="contact-info-item">
-                  <p className="contact-info-label">Email</p>
-                  <p className="contact-info-value">
-                    <a href="mailto:achodoconfidence@gmail.com">
-                      achodoconfidence@gmail.com
-                    </a>
-                  </p>
-                </div>
-                <div className="contact-info-item">
-                  <p className="contact-info-label">Phone / WhatsApp</p>
-                  <p className="contact-info-value">
-                    <a href="tel:+2347060614389">+234 706 061 4389</a>
-                  </p>
-                </div>
-                <div className="contact-info-item">
-                  <p className="contact-info-label">Company</p>
-                  <p className="contact-info-value">
-                    <a
-                      href="https://edenoasisrealty.com"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Eden Oasis Realty Limited
-                    </a>
-                  </p>
-                </div>
-                <div className="contact-info-item">
-                  <p className="contact-info-label">Location</p>
-                  <p className="contact-info-value">Lagos, Nigeria</p>
-                </div>
-                <div className="contact-info-item">
-                  <p className="contact-info-label">Podcast Enquiries</p>
-                  <p className="contact-info-value">
-                    <a href="mailto:thekkshowkeytokeys@gmail.com">
-                      thekkshowkeytokeys@gmail.com
-                    </a>
-                  </p>
-                </div>
-                <div className="social-row">
-                  {socials.map((social) => (
-                    <a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="social-link"
-                    >
-                      {social.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <form
-                  className="contact-form"
-                  onSubmit={(event) => event.preventDefault()}
-                >
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="full-name">
-                      Full Name
-                    </label>
-                    <input
-                      id="full-name"
-                      type="text"
-                      className="form-input"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="email-address">
-                      Email Address
-                    </label>
-                    <input
-                      id="email-address"
-                      type="email"
-                      className="form-input"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="contact-purpose">
-                      Purpose of Contact
-                    </label>
-                    <select
-                      id="contact-purpose"
-                      className="form-input purpose-select"
-                      defaultValue=""
-                    >
-                      <option value="">Select an option</option>
-                      <option value="speaking">Speaking Engagement</option>
-                      <option value="investment">Real Estate Investment</option>
-                      <option value="podcast">Podcast / Media</option>
-                      <option value="partnership">Partnership</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="message">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      className="form-input"
-                      placeholder="Tell me what you have in mind..."
-                    />
-                  </div>
-                  <button type="submit" className="form-btn">
-                    Send Message
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
-
-      <footer>
-        <p className="footer-logo">Confidence Achodo Molade</p>
-        <p className="footer-copy">
-          © {currentYear} · All rights reserved · Built with purpose.
-        </p>
-      </footer>
     </>
   );
 }

@@ -8,6 +8,8 @@ import {
   Montserrat,
 } from "next/font/google";
 
+import { SiteFooter } from "@/components/site-footer";
+
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -58,6 +60,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={karla.className} style={fontVariables}>
         {children}
+        <SiteFooter />
       </body>
     </html>
   );
