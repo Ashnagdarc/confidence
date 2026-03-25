@@ -1,7 +1,16 @@
 .pageMain {
+  --contact-ink: var(--charcoal);
+  --contact-ink-soft: var(--warm-grey);
+  --contact-accent: var(--gold);
+  --contact-accent-soft: var(--border-accent-soft);
+  --contact-accent-strong: var(--gold-dark);
+  --contact-cream: var(--cream);
+  --contact-danger: rgb(var(--danger-rgb));
+  --contact-danger-soft: rgb(var(--danger-rgb) / 0.14);
+  --contact-danger-ink: rgb(var(--danger-ink-rgb));
   background:
-    radial-gradient(circle at top center, rgb(17 17 17 / 0.04), transparent 28%),
-    #fff;
+    radial-gradient(circle at top center, rgb(201 169 110 / 0.12), transparent 34%),
+    linear-gradient(180deg, var(--surface-base) 0%, var(--cream) 100%);
   min-height: calc(100vh - 5rem);
   padding: 8.5rem 1.5rem 5rem;
 }
@@ -9,6 +18,8 @@
 .shell {
   margin: 0 auto;
   max-width: 1120px;
+  padding: 0;
+  width: min(100%, 1120px);
 }
 
 .header {
@@ -18,7 +29,8 @@
 }
 
 .eyebrow {
-  color: #777d86;
+  color: var(--contact-accent-strong);
+  font-family: var(--mono);
   font-size: 0.86rem;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -27,30 +39,32 @@
 }
 
 .title {
-  color: #6f7580;
-  font-family: var(--font-hero-ui);
+  color: var(--contact-ink-soft);
+  font-family: var(--display);
   font-size: clamp(2.5rem, 5vw, 4.1rem);
-  font-weight: 500;
-  letter-spacing: -0.06em;
+  font-weight: 400;
+  letter-spacing: -0.05em;
   line-height: 0.98;
 }
 
 .titleAccent {
-  color: #111;
+  color: var(--contact-ink);
 }
 
 .layout {
   align-items: stretch;
   display: grid;
   gap: 1.35rem;
-  grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.85fr);
+  grid-template-columns: minmax(0, 1.65fr) minmax(18.5rem, 0.85fr);
 }
 
 .formCard {
-  background: #111;
-  border-radius: 2rem;
-  box-shadow: 0 28px 56px rgb(17 17 17 / 18%);
-  color: #fff;
+  background: linear-gradient(180deg, var(--surface-dark-panel) 0%, var(--surface-dark-strong) 100%);
+  border: 1px solid var(--contact-accent-soft);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card-lg);
+  color: var(--contact-cream);
+  min-width: 0;
   padding: 1.6rem;
 }
 
@@ -67,8 +81,8 @@
 }
 
 .fieldLabel {
-  color: rgb(255 255 255 / 0.9);
-  font-family: var(--font-hero-ui);
+  color: rgb(248 244 238 / 0.92);
+  font-family: var(--sans);
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -77,11 +91,11 @@
 .field,
 .textarea {
   appearance: none;
-  background: #2c2c2c;
-  border: 1px solid #2c2c2c;
-  border-radius: 0.9rem;
-  color: #fff;
-  font-family: var(--font-hero-ui);
+  background: rgb(248 244 238 / 0.08);
+  border: 1px solid rgb(var(--gold-light-rgb) / 0.14);
+  border-radius: var(--radius-field);
+  color: var(--contact-cream);
+  font-family: var(--sans);
   font-size: 1.04rem;
   line-height: 1.45;
   outline: none;
@@ -94,43 +108,52 @@
 
 .field::placeholder,
 .textarea::placeholder {
-  color: rgb(255 255 255 / 0.55);
+  color: rgb(248 244 238 / 0.56);
 }
 
 .field:focus,
 .textarea:focus {
-  background: #303030;
-  border-color: rgb(255 255 255 / 0.2);
-  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+  background: rgb(248 244 238 / 0.1);
+  border-color: rgb(201 169 110 / 0.5);
+  box-shadow: 0 0 0 3px rgb(var(--gold-rgb) / 0.14);
+}
+
+.field:focus-visible,
+.textarea:focus-visible,
+.submit:focus-visible,
+.metaValue:focus-visible,
+.socialLink:focus-visible,
+.asideButton:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  box-shadow: var(--shadow-focus);
 }
 
 .field:disabled,
 .textarea:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  background: #1a1a1a;
+  background: rgb(248 244 238 / 0.04);
 }
 
-.field:invalid,
 .field[aria-invalid="true"],
-.textarea:invalid,
 .textarea[aria-invalid="true"] {
-  border-color: #dc3545;
-  background: rgba(220, 53, 69, 0.08);
+  border-color: rgb(169 95 86 / 0.72);
+  background: var(--contact-danger-soft);
 }
 
-.field-error {
-  color: #dc3545;
+.fieldError {
+  color: var(--contact-danger-ink);
   font-size: 0.875rem;
   margin-top: 0.25rem;
   font-weight: 500;
 }
 
 .successMessage {
-  background: rgba(40, 167, 69, 0.1);
-  border: 1px solid rgba(40, 167, 69, 0.3);
-  border-radius: 0.9rem;
-  color: #28a745;
+  background: rgb(201 169 110 / 0.14);
+  border: 1px solid rgb(201 169 110 / 0.28);
+  border-radius: var(--radius-field);
+  color: var(--gold-light);
   padding: 1rem;
   margin-bottom: 1rem;
   font-size: 0.95rem;
@@ -139,10 +162,10 @@
 }
 
 .errorMessage {
-  background: rgba(220, 53, 69, 0.1);
-  border: 1px solid rgba(220, 53, 69, 0.3);
-  border-radius: 0.9rem;
-  color: #dc3545;
+  background: var(--contact-danger-soft);
+  border: 1px solid rgb(169 95 86 / 0.34);
+  border-radius: var(--radius-field);
+  color: var(--contact-danger-ink);
   padding: 1rem;
   margin-bottom: 1rem;
   font-size: 0.95rem;
@@ -168,13 +191,13 @@
 
 .submit {
   align-items: center;
-  background: #fff;
-  border: 1px solid #fff;
-  border-radius: 0.9rem;
-  color: #111;
+  background: var(--contact-cream);
+  border: 1px solid var(--contact-cream);
+  border-radius: var(--radius-field);
+  color: var(--contact-ink);
   cursor: pointer;
   display: inline-flex;
-  font-family: var(--font-hero-ui);
+  font-family: var(--sans);
   font-size: 1.08rem;
   font-weight: 500;
   justify-content: center;
@@ -189,13 +212,14 @@
 }
 
 .submit:hover {
-  box-shadow: 0 12px 24px rgb(255 255 255 / 0.12);
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-1px);
 }
 
 .submit:focus-visible {
-  outline: 2px solid #c9a96e;
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .submit:active {
@@ -220,13 +244,16 @@
 }
 
 .asideCard {
-  background: #f5f5f5;
-  border: 1px solid rgb(17 17 17 / 0.05);
-  border-radius: 2rem;
-  box-shadow: 0 18px 40px rgb(17 17 17 / 0.08);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.96) 0%, rgb(248 244 238 / 0.94) 100%);
+  border: 1px solid var(--contact-accent-soft);
+  border-radius: var(--radius-card);
+  box-shadow:
+    var(--shadow-card-md),
+    var(--shadow-glass-inset-soft);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
   min-height: 100%;
   padding: 1.5rem;
 }
@@ -238,8 +265,9 @@
 }
 
 .avatar {
-  border-radius: 1rem;
-  box-shadow: 0 12px 24px rgb(17 17 17 / 0.08);
+  border: 1px solid var(--contact-accent-soft);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-card-sm);
   display: block;
   height: 4.9rem;
   object-fit: cover;
@@ -248,8 +276,8 @@
 }
 
 .asideCopy {
-  color: #6d7480;
-  font-family: var(--font-hero-ui);
+  color: var(--contact-ink-soft);
+  font-family: var(--sans);
   font-size: clamp(1.35rem, 2.1vw, 1.95rem);
   font-weight: 400;
   letter-spacing: -0.04em;
@@ -257,17 +285,17 @@
 }
 
 .asideStrong {
-  color: #111;
+  color: var(--contact-ink);
   font-weight: 500;
 }
 
 .durationPill {
   align-self: flex-start;
-  background: #fff;
-  border: 1px solid rgb(17 17 17 / 0.08);
-  border-radius: 999px;
-  color: #8a9099;
-  font-family: var(--font-hero-ui);
+  background: rgb(255 255 255 / 0.82);
+  border: 1px solid var(--contact-accent-soft);
+  border-radius: var(--radius-pill);
+  color: var(--contact-accent-strong);
+  font-family: var(--sans);
   font-size: 0.95rem;
   padding: 0.55rem 0.9rem;
 }
@@ -284,23 +312,25 @@
 }
 
 .metaLabel {
-  color: #8b919a;
+  color: var(--contact-accent-strong);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .metaValue {
-  color: #1f1f1f;
-  font-family: var(--font-hero-ui);
+  color: var(--contact-ink);
+  font-family: var(--sans);
   font-size: 1rem;
   line-height: 1.4;
+  overflow-wrap: anywhere;
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .metaValue:hover {
-  color: #000;
+  color: var(--contact-accent-strong);
 }
 
 .socials {
@@ -310,32 +340,34 @@
 }
 
 .socialLink {
-  background: #fff;
-  border: 1px solid rgb(17 17 17 / 0.08);
-  border-radius: 999px;
-  color: #525862;
-  font-family: var(--font-hero-ui);
+  background: rgb(255 255 255 / 0.9);
+  border: 1px solid var(--contact-accent-soft);
+  border-radius: var(--radius-pill);
+  color: var(--contact-ink-soft);
+  font-family: var(--sans);
   font-size: 0.92rem;
   padding: 0.6rem 0.85rem;
   text-decoration: none;
   transition:
+    background 0.2s ease,
     border-color 0.2s ease,
     color 0.2s ease;
 }
 
 .socialLink:hover {
-  border-color: rgb(17 17 17 / 0.16);
-  color: #111;
+  background: rgb(248 244 238 / 0.92);
+  border-color: var(--border-accent-strong);
+  color: var(--contact-accent-strong);
 }
 
 .asideButton {
   align-items: center;
-  background: transparent;
-  border: 1px solid rgb(17 17 17 / 0.14);
-  border-radius: 1rem;
-  color: #111;
+  background: var(--contact-ink);
+  border: 1px solid var(--contact-ink);
+  border-radius: var(--radius-control);
+  color: var(--contact-cream);
   display: inline-flex;
-  font-family: var(--font-hero-ui);
+  font-family: var(--sans);
   font-size: 1.02rem;
   font-weight: 500;
   justify-content: center;
@@ -343,12 +375,18 @@
   text-decoration: none;
   transition:
     background 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .asideButton:hover {
-  background: rgb(17 17 17 / 0.04);
-  border-color: rgb(17 17 17 / 0.2);
+  background: var(--contact-accent);
+  border-color: var(--contact-accent);
+  box-shadow: var(--shadow-gold-md);
+  color: var(--contact-ink);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 960px) {
@@ -367,7 +405,7 @@
 
 @media (max-width: 640px) {
   .pageMain {
-    padding: 6.6rem 1rem 3.5rem;
+    padding: 6.6rem var(--space-page-x-mobile) 3.5rem;
   }
 
   .header {
@@ -386,8 +424,8 @@
 
   .formCard,
   .asideCard {
-    border-radius: 1.5rem;
-    padding: 1.15rem;
+    border-radius: calc(var(--radius-control) + 0.4rem);
+    padding: 1rem;
   }
 
   .avatar {
@@ -397,6 +435,11 @@
 
   .asideCopy {
     font-size: 1.28rem;
+  }
+
+  .durationPill,
+  .socialLink {
+    font-size: 0.88rem;
   }
 
   .submit,

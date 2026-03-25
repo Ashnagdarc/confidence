@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "brand:check": "node scripts/check-brand-system.mjs",
+    "brand:verify": "npm run brand:check && npm run build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start"

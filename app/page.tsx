@@ -16,7 +16,9 @@ type Stat = {
 
 type GalleryItem = {
   caption: string;
-  tone: "gradient-strong" | "solid-deep" | "solid-mid";
+  alt: string;
+  imageSrc: string;
+  objectPosition?: string;
   large?: boolean;
 };
 
@@ -31,7 +33,6 @@ type Article = {
   category: string;
   title: string;
   excerpt: string;
-  cta: string;
 };
 
 type FadeUpProps = {
@@ -53,9 +54,25 @@ const credentials = [
 ];
 
 const aboutGallery: GalleryItem[] = [
-  { caption: "Leadership", tone: "gradient-strong", large: true },
-  { caption: "On Stage", tone: "solid-deep" },
-  { caption: "The KK Show", tone: "solid-mid" },
+  {
+    caption: "Leadership",
+    alt: "Confidence Molade standing in a pink tailored outfit",
+    imageSrc: "/about/leadership.jpg",
+    objectPosition: "center 18%",
+    large: true,
+  },
+  {
+    caption: "Industry",
+    alt: "Confidence Molade in an orange suit and hard hat inside a real estate project office",
+    imageSrc: "/about/industry.jpg",
+    objectPosition: "center 24%",
+  },
+  {
+    caption: "Presence",
+    alt: "Confidence Molade in a white suit against a red studio backdrop",
+    imageSrc: "/about/presence.jpg",
+    objectPosition: "center top",
+  },
 ];
 
 const works: WorkItem[] = [
@@ -102,47 +119,40 @@ const articles: Article[] = [
     title: "Why the New Lagos Corridor Is the Most Important Real Estate Story in Africa Right Now",
     excerpt:
       "The infrastructure connecting Lekki Free Trade Zone, Ibeju-Lekki, and Epe is not a story about land. It is a story about the next generation of Nigerian wealth — and where it will be built. Here is what no one is telling you.",
-    cta: "Read Essay",
   },
   {
     category: "Market Watch",
     title: "The Truth About Off-Plan Investment in Lagos — What Buyers Must Know",
     excerpt:
       "Off-plan promises are only as good as the developer behind them. Here is a no-nonsense framework for evaluating risk before you commit a single naira.",
-    cta: "Read Article",
   },
   {
     category: "Leadership",
     title: "Confidence as a Career: How I Built a Real Estate Empire Without Losing Myself",
     excerpt:
       "Leadership is not loudness. This is the story of how a disciplined faith, a clear vision, and relentless consistency built something that lasts.",
-    cta: "Read Article",
   },
   {
     category: "Women in Business",
     title: "The Banana Island Shortlet Ban: What It Signals for the Nigerian Luxury Market",
     excerpt:
       "Regulation follows demand. And this particular regulation tells us something important about where premium real estate in Lagos is headed — and what investors should do now.",
-    cta: "Read Article",
   },
   {
     category: "Faith & Purpose",
     title: "7 Things I Know About Carrying Purpose in a Competitive World",
     excerpt:
       "Success without roots is just performance. These are the seven truths that anchor me when the pressure is highest and the stakes are real.",
-    cta: "Read Article",
   },
   {
     category: "Diaspora Investor Series",
     title: "Nigerians in the Diaspora: A Step-By-Step Guide to Buying Property Safely From Abroad",
     excerpt:
       "Distance is not a barrier. Ignorance is. Here is the complete guide to protecting your diaspora investment from title to keys — with no excuses left.",
-    cta: "Read Guide",
   },
 ];
 
-const heroPortrait = "https://www.figma.com/api/mcp/asset/69c81a87-4ca0-4125-84e8-d87a3d244a27";
-const heroStatusDot = "https://www.figma.com/api/mcp/asset/7553c5d2-1dc2-486a-9587-7e574910a34c";
+const heroPortrait = "/hero/portrait.png";
 
 const pillarImages: Record<string, string> = {
   "faith-based-leader": "/pillars/faith-based-leader.jpg",
@@ -215,48 +225,6 @@ export default function Home() {
 
     return () => {
       window.removeEventListener("resize", closeMenuOnResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    const sections = document.querySelectorAll<HTMLElement>("[data-scroll-section]");
-    let frameId = 0;
-
-    const updateSectionMotion = () => {
-      frameId = 0;
-      const viewportHeight = window.innerHeight;
-
-      sections.forEach((section) => {
-        const rect = section.getBoundingClientRect();
-        const progress = Math.min(
-          Math.max(
-            (viewportHeight - rect.top) / (viewportHeight + rect.height * 0.35),
-            0,
-          ),
-          1,
-        );
-
-        section.style.setProperty("--section-progress", progress.toFixed(4));
-      });
-    };
-
-    const scheduleSectionMotion = () => {
-      if (frameId === 0) {
-        frameId = window.requestAnimationFrame(updateSectionMotion);
-      }
-    };
-
-    updateSectionMotion();
-    window.addEventListener("scroll", scheduleSectionMotion, { passive: true });
-    window.addEventListener("resize", scheduleSectionMotion);
-
-    return () => {
-      if (frameId !== 0) {
-        window.cancelAnimationFrame(frameId);
-      }
-
-      window.removeEventListener("scroll", scheduleSectionMotion);
-      window.removeEventListener("resize", scheduleSectionMotion);
     };
   }, []);
 
@@ -335,10 +303,14 @@ export default function Home() {
           <div className={heroStyles.shell}>
             <div className={heroStyles.visualStage} aria-hidden="true">
               <div className={heroStyles.portrait}>
-                <img
+                <Image
                   src={heroPortrait}
-                  alt=""
+                  alt="Confidence Molade in a structured black outfit against a bright studio backdrop"
                   className={`${heroStyles.image} ${heroStyles.imageBase}`}
+                  width={1512}
+                  height={982}
+                  priority
+                  sizes="(max-width: 900px) 100vw, 83vw"
                 />
               </div>
             </div>
@@ -353,12 +325,7 @@ export default function Home() {
 
             <div className={heroStyles.award}>
               <div className={heroStyles.availabilityChip}>
-                <img
-                  src={heroStatusDot}
-                  alt=""
-                  aria-hidden="true"
-                  className={heroStyles.availabilityDot}
-                />
+                <span aria-hidden="true" className={heroStyles.availabilityDot} />
                 <span>Available for collaboration</span>
               </div>
               <h1 className={heroStyles.title}>
@@ -426,9 +393,14 @@ inside it.
                   key={item.caption}
                   className={`about-img-block ${item.large ? "about-img-large" : ""}`}
                 >
-                  <div className={`photo-placeholder about-photo-placeholder ${item.tone}`}>
-                    <span>Photo</span>
-                  </div>
+                  <Image
+                    src={item.imageSrc}
+                    alt={item.alt}
+                    className="about-img-media"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw"
+                    style={{ objectPosition: item.objectPosition ?? "center center" }}
+                  />
                   <span className="about-img-caption">{item.caption}</span>
                 </div>
               ))}
@@ -496,7 +468,7 @@ inside it.
               </h3>
               <p className="body-text pillar-detail-copy">
                 Every woman carries within her the seed of extraordinary
-                influence. Confidence Achodo Molade built her seven-pillar
+                influence. Confidence Molade built her seven-pillar
                 framework not as a showcase of achievement — but as an
                 invitation. An invitation to every woman watching from the
                 sidelines to step into the arena, armed with strategy, faith,
@@ -553,6 +525,9 @@ inside it.
                   <p className="work-tag">{work.tag}</p>
                   <h3 className="work-title">{work.title}</h3>
                   <p className="work-desc">{work.description}</p>
+                  <span className="work-status" aria-disabled="true">
+                    Case Study Coming Soon
+                  </span>
                 </div>
               </article>
             ))}
@@ -569,9 +544,9 @@ inside it.
                 Worth Having
               </h2>
             </div>
-            <Link href="/contact" className="btn-ghost">
-              All Articles <span aria-hidden="true">→</span>
-            </Link>
+            <span className="btn-ghost btn-ghost-disabled" aria-disabled="true">
+              Articles Coming Soon
+            </span>
           </FadeUp>
 
           <FadeUp className="blog-grid">
@@ -580,9 +555,9 @@ inside it.
                 <p className="blog-date">{article.category}</p>
                 <h3 className="blog-title">{article.title}</h3>
                 <p className="blog-excerpt">{article.excerpt}</p>
-                <Link href="/contact" className="read-more">
-                  {article.cta}
-                </Link>
+                <span className="read-more read-more-disabled" aria-disabled="true">
+                  Publishing Soon
+                </span>
               </article>
             ))}
           </FadeUp>

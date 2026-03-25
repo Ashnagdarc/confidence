@@ -24,12 +24,12 @@ export async function generateMetadata({
 
   if (!pillar) {
     return {
-      title: "Pillar Not Found | Confidence Achodo Molade",
+      title: "Pillar Not Found | Confidence Molade",
     };
   }
 
   return {
-    title: `${pillar.title} | Confidence Achodo Molade`,
+    title: `${pillar.title} | Confidence Molade`,
     description: pillar.heroIntro,
   };
 }

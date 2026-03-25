@@ -85,9 +85,9 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
   return (
     <div className="pillar-page">
       <nav
-        className={`pillar-page-nav home-hero-nav ${navScrolled ? "scrolled" : ""} ${mobileNavOpen ? "mobile-open" : ""}`.trim()}
+        className={`pillar-page-nav ${navScrolled ? "scrolled" : ""} ${mobileNavOpen ? "mobile-open" : ""}`.trim()}
       >
-        <Link href="/" className="nav-logo home-hero-wordmark">
+        <Link href="/" className="nav-logo">
           Confidence Molade
         </Link>
         <ul className="nav-links">

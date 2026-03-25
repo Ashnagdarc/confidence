@@ -1,4 +1,7 @@
 .next
+.next-stale-*
 node_modules
 npm-debug.log*
 .DS_Store
+output/*.png
+images/Speaker.jpg

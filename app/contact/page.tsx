@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 
 import styles from "./contact.module.css";
 
@@ -26,34 +32,105 @@ const socials = [
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
+type ContactFormData = {
+  name: string;
+  email: string;
+  purpose: string;
+  message: string;
+};
+
+type FormErrors = Partial<Record<keyof ContactFormData, string>>;
+
+const initialFormData: ContactFormData = {
+  name: '',
+  email: '',
+  purpose: '',
+  message: '',
+};
+
+function validateFormData(formData: ContactFormData): FormErrors {
+  const errors: FormErrors = {};
+
+  if (!formData.name.trim()) {
+    errors.name = 'Please enter your name.';
+  }
+
+  if (!formData.email.trim()) {
+    errors.email = 'Please enter your email address.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+    errors.email = 'Enter a valid email address.';
+  }
+
+  if (!formData.purpose) {
+    errors.purpose = 'Select a reason for getting in touch.';
+  }
+
+  if (!formData.message.trim()) {
+    errors.message = 'Please add a short message.';
+  }
+
+  return errors;
+}
+
 export default function ContactPage() {
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [formStatus, setFormStatus] = useState<FormStatus>('idle');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    purpose: '',
-    message: '',
-  });
+  const [formData, setFormData] = useState<ContactFormData>(initialFormData);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const statusTimeoutRef = useRef<number | null>(null);
 
-  const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const clearStatusTimeout = () => {
+    if (statusTimeoutRef.current !== null) {
+      window.clearTimeout(statusTimeoutRef.current);
+      statusTimeoutRef.current = null;
+    }
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const queueStatusReset = (delay: number) => {
+    clearStatusTimeout();
+    statusTimeoutRef.current = window.setTimeout(() => {
+      setFormStatus('idle');
+      statusTimeoutRef.current = null;
+    }, delay);
+  };
 
-    // Validate form
-    if (!formData.name || !formData.email || !formData.purpose || !formData.message) {
+  const handleFormChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    const fieldName = name as keyof ContactFormData;
+    const nextFormData = {
+      ...formData,
+      [fieldName]: value,
+    };
+
+    setFormData(nextFormData);
+
+    if (formStatus === 'success') {
+      clearStatusTimeout();
+      setFormStatus('idle');
+    }
+
+    if (hasSubmitted || formErrors[fieldName]) {
+      setFormErrors(validateFormData(nextFormData));
+    }
+  };
+
+  const getFieldErrorId = (field: keyof ContactFormData) => `contact-${field}-error`;
+
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setHasSubmitted(true);
+    clearStatusTimeout();
+
+    const errors = validateFormData(formData);
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
       setFormStatus('error');
-      setTimeout(() => setFormStatus('idle'), 3000);
+      queueStatusReset(3000);
       return;
     }
 
@@ -71,14 +148,16 @@ export default function ContactPage() {
       // });
 
       setFormStatus('success');
-      setFormData({ name: '', email: '', purpose: '', message: '' });
+      setFormErrors({});
+      setHasSubmitted(false);
+      setFormData(initialFormData);
 
       // Reset to idle after 5 seconds
-      setTimeout(() => setFormStatus('idle'), 5000);
+      queueStatusReset(5000);
     } catch (error) {
       console.error('Form submission error:', error);
       setFormStatus('error');
-      setTimeout(() => setFormStatus('idle'), 3000);
+      queueStatusReset(3000);
     }
   };
 
@@ -98,6 +177,7 @@ export default function ContactPage() {
     window.addEventListener("scroll", updateNav, { passive: true });
 
     return () => {
+      clearStatusTimeout();
       window.removeEventListener("resize", closeMenuOnResize);
       window.removeEventListener("scroll", updateNav);
     };
@@ -187,6 +267,7 @@ export default function ContactPage() {
               <form
                 className={styles.form}
                 onSubmit={handleFormSubmit}
+                noValidate
               >
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="contact-full-name">
@@ -201,8 +282,15 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleFormChange}
                     required
-                    aria-invalid={formStatus === 'error' && !formData.name ? 'true' : 'false'}
+                    disabled={formStatus === 'loading'}
+                    aria-invalid={Boolean(formErrors.name)}
+                    aria-describedby={formErrors.name ? getFieldErrorId('name') : undefined}
                   />
+                  {formErrors.name && (
+                    <p id={getFieldErrorId('name')} className={styles.fieldError}>
+                      {formErrors.name}
+                    </p>
+                  )}
                 </div>
                 <div className={styles.fieldGroup}>
                   <label
@@ -220,8 +308,15 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleFormChange}
                     required
-                    aria-invalid={formStatus === 'error' && !formData.email}
+                    disabled={formStatus === 'loading'}
+                    aria-invalid={Boolean(formErrors.email)}
+                    aria-describedby={formErrors.email ? getFieldErrorId('email') : undefined}
                   />
+                  {formErrors.email && (
+                    <p id={getFieldErrorId('email')} className={styles.fieldError}>
+                      {formErrors.email}
+                    </p>
+                  )}
                 </div>
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="contact-purpose">
@@ -234,7 +329,9 @@ export default function ContactPage() {
                     value={formData.purpose}
                     onChange={handleFormChange}
                     required
-                    aria-invalid={formStatus === 'error' && !formData.purpose}
+                    disabled={formStatus === 'loading'}
+                    aria-invalid={Boolean(formErrors.purpose)}
+                    aria-describedby={formErrors.purpose ? getFieldErrorId('purpose') : undefined}
                   >
                     <option value="">Select an option</option>
                     <option value="speaking">Speaking Engagement</option>
@@ -243,6 +340,11 @@ export default function ContactPage() {
                     <option value="partnership">Partnership</option>
                     <option value="other">Other</option>
                   </select>
+                  {formErrors.purpose && (
+                    <p id={getFieldErrorId('purpose')} className={styles.fieldError}>
+                      {formErrors.purpose}
+                    </p>
+                  )}
                 </div>
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="contact-message">
@@ -256,19 +358,26 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleFormChange}
                     required
-                    aria-invalid={formStatus === 'error' && !formData.message}
+                    disabled={formStatus === 'loading'}
+                    aria-invalid={Boolean(formErrors.message)}
+                    aria-describedby={formErrors.message ? getFieldErrorId('message') : undefined}
                   />
+                  {formErrors.message && (
+                    <p id={getFieldErrorId('message')} className={styles.fieldError}>
+                      {formErrors.message}
+                    </p>
+                  )}
                 </div>
 
                 {formStatus === 'success' && (
-                  <div className={styles.successMessage}>
+                  <div className={styles.successMessage} role="status" aria-live="polite">
                     ✓ Message sent successfully! I&apos;ll be in touch soon.
                   </div>
                 )}
 
-                {formStatus === 'error' && (
-                  <div className={styles.errorMessage}>
-                    Please fill out all fields correctly.
+                {formStatus === 'error' && hasSubmitted && Object.keys(formErrors).length > 0 && (
+                  <div className={styles.errorMessage} role="alert">
+                    Please correct the highlighted fields and try again.
                   </div>
                 )}
 
