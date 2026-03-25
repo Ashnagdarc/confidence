@@ -157,7 +157,7 @@ const heroPortrait = "/hero/portrait.png";
 const pillarImages: Record<string, string> = {
   "faith-based-leader": "/pillars/faith-based-leader.jpg",
   "family-woman": "/pillars/family-woman.jpg",
-  "public-speaker": "/pillars/public-speaker.jpg",
+  "public-speaker": "/Speaker.jpg",
   "real-estate-mogul": "/pillars/real-estate-mogul.jpg",
   "style-icon": "/pillars/style-icon.jpg",
   "thought-leader": "/pillars/thought-leader.jpg",

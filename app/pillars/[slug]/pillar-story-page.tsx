@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -17,6 +18,44 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const siblingPillars = useMemo(() => getSiblingPillars(pillar.slug), [pillar.slug]);
+  const heroStyle = useMemo<CSSProperties | undefined>(() => {
+    if (pillar.slug !== "public-speaker") {
+      return undefined;
+    }
+
+    return {
+      "--pillar-hero-image": "url('/pillars/public-speaker-hero.jpg')",
+      "--pillar-hero-position": "center 18%",
+    } as CSSProperties;
+  }, [pillar.slug]);
+  const storyPanelStyles = useMemo<Partial<Record<number, CSSProperties>>>(() => {
+    if (pillar.slug !== "public-speaker") {
+      return {};
+    }
+
+    return {
+      0: {
+        "--story-panel-visual-image":
+          "url('/pillars/public-speaker-clarity.jpg')",
+        "--story-panel-visual-position": "center center",
+      } as CSSProperties,
+      1: {
+        "--story-panel-visual-image":
+          "url('/pillars/public-speaker-stagecraft.jpg')",
+        "--story-panel-visual-position": "center center",
+      } as CSSProperties,
+      2: {
+        "--story-panel-visual-image":
+          "url('/pillars/public-speaker-message-design.jpg')",
+        "--story-panel-visual-position": "center center",
+      } as CSSProperties,
+      3: {
+        "--story-panel-visual-image":
+          "url('/pillars/public-speaker-impact.jpg')",
+        "--story-panel-visual-position": "center center",
+      } as CSSProperties,
+    };
+  }, [pillar.slug]);
 
   useEffect(() => {
     const closeMenuOnResize = () => {
@@ -33,52 +72,15 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
   }, []);
 
   useEffect(() => {
-    const panels = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-story-panel]"),
-    );
-
-    let frameId = 0;
-
-    const updatePanels = () => {
-      const viewportHeight = window.innerHeight;
-      const nextScrolled = window.scrollY > 24;
-
-      setNavScrolled((current) => {
-        return current === nextScrolled ? current : nextScrolled;
-      });
-
-      panels.forEach((panel) => {
-        const rect = panel.getBoundingClientRect();
-        const progress = Math.min(
-          Math.max((viewportHeight - rect.top) / (viewportHeight * 0.9), 0),
-          1,
-        );
-
-        panel.style.setProperty("--panel-progress", progress.toFixed(3));
-      });
-
-      frameId = 0;
+    const updateNav = () => {
+      setNavScrolled(window.scrollY > 24);
     };
 
-    const requestUpdate = () => {
-      if (frameId !== 0) {
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(updatePanels);
-    };
-
-    updatePanels();
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate);
+    updateNav();
+    window.addEventListener("scroll", updateNav, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
-
-      if (frameId !== 0) {
-        window.cancelAnimationFrame(frameId);
-      }
+      window.removeEventListener("scroll", updateNav);
     };
   }, []);
 
@@ -152,11 +154,10 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
       </nav>
 
       <main>
-        <section className="pillar-hero">
+        <section className="pillar-hero" style={heroStyle}>
           <div className="pillar-hero-copy-block">
             <p className="pillar-kicker">{pillar.heroEyebrow}</p>
             <div className="pillar-hero-title-row">
-              <span className="pillar-number-badge">{pillar.number}</span>
               <h1 className="pillar-hero-title">{pillar.title}</h1>
             </div>
             <p className="pillar-hero-copy">{pillar.heroIntro}</p>
@@ -169,72 +170,51 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
               </Link>
             </div>
           </div>
-
-          <aside className="pillar-hero-aside">
-            <div className="pillar-hero-visual">
-              <div className="pillar-hero-icon-wrap">
-                <PillarIcon icon={pillar.icon} className="pillar-hero-icon" />
-              </div>
-              <p className="pillar-hero-visual-label">{pillar.visualLabel}</p>
-            </div>
-            <p className="pillar-hero-quote">{pillar.quote}</p>
-            <div className="pillar-topic-list">
-              {pillar.sections.map((section) => (
-                <div key={section.title} className="pillar-topic-item">
-                  <p className="pillar-topic-metric">{section.metric}</p>
-                  <p className="pillar-topic-title">{section.title}</p>
-                </div>
-              ))}
-            </div>
-          </aside>
         </section>
 
         <section id="story" className="pillar-story-stage">
           <div className="pillar-story-intro">
             <div>
-              <p className="section-eyebrow">The Write-Up</p>
-              <h2 className="h2-xl">
-                The layered practice behind
-                <br />
-                <em className="gold-italic">{pillar.title}</em>
-              </h2>
+              <p className="section-eyebrow">Inside the Pillar</p>
+              <h2 className="h2-xl">Chapter by chapter, the method stays clear.</h2>
             </div>
             <p className="body-text pillar-story-intro-copy">
-              Each chapter below is designed to slide over the last as you scroll,
-              so the pillar reads like a progression rather than a stack of cards.
-              The movement is deliberate: every new section advances the idea and
-              gradually takes the foreground.
+              Each section isolates one operating principle so the story reads in a
+              clean sequence: one idea, one visual, one advancement at a time.
             </p>
           </div>
 
           <div className="story-panels">
-            {pillar.sections.map((section, index) => (
-              <article
-                key={section.title}
-                data-story-panel
-                className="story-panel"
-                style={{ zIndex: index + 1 }}
-              >
-                <div className="story-panel-card">
-                  <div className="story-panel-visual">
-                    <p className="story-panel-index">
-                      {pillar.number}
-                      <span>/0{index + 1}</span>
-                    </p>
-                    <div className="story-panel-meta">
-                      <p className="story-panel-metric">{section.metric}</p>
-                      <p className="story-panel-accent">{section.accent}</p>
+            {pillar.sections.map((section, index) => {
+              const panelStyle = storyPanelStyles[index];
+
+              return (
+                <article
+                  key={section.title}
+                  data-story-panel
+                  className="story-panel"
+                  style={{ zIndex: index + 1 }}
+                >
+                  <div
+                    className={`story-panel-card ${panelStyle ? "has-story-visual-image" : ""}`.trim()}
+                    style={panelStyle}
+                  >
+                    <div className="story-panel-visual">
+                      <div className="story-panel-meta">
+                        <p className="story-panel-metric">{section.metric}</p>
+                        <p className="story-panel-accent">{section.accent}</p>
+                      </div>
+                    </div>
+
+                    <div className="story-panel-copy">
+                      <p className="section-eyebrow">{section.eyebrow}</p>
+                      <h2 className="story-panel-title">{section.title}</h2>
+                      <p className="story-panel-body">{section.body}</p>
                     </div>
                   </div>
-
-                  <div className="story-panel-copy">
-                    <p className="section-eyebrow">{section.eyebrow}</p>
-                    <h2 className="story-panel-title">{section.title}</h2>
-                    <p className="story-panel-body">{section.body}</p>
-                  </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
         </section>
 
