@@ -1667,6 +1667,17 @@ textarea.form-input {
   color: var(--gold-light);
 }
 
+.pillar-page-cta .pillar-ghost-button {
+  border-color: rgb(26 24 20 / 26%);
+  color: var(--charcoal);
+}
+
+.pillar-page-cta .pillar-ghost-button:hover {
+  background: rgb(26 24 20 / 8%);
+  border-color: rgb(26 24 20 / 45%);
+  color: var(--charcoal);
+}
+
 .pillar-hero-aside {
   background: linear-gradient(180deg, rgb(248 244 238 / 5%) 0%, rgb(248 244 238 / 2%) 100%);
   border: 0.5px solid rgb(201 169 110 / 18%);
@@ -1741,7 +1752,18 @@ textarea.form-input {
 
 .pillar-story-stage {
   background: #fff;
-  padding: 2rem 4rem 7rem;
+  padding: 0;
+  position: relative;
+}
+
+.pillar-story-intro {
+  padding: 2rem 4rem 0;
+  margin-bottom: 3rem;
+}
+
+.story-panels {
+  position: relative;
+  padding-bottom: 7rem;
 }
 
 .pillar-story-intro {
@@ -1749,7 +1771,7 @@ textarea.form-input {
   display: grid;
   gap: 3rem;
   grid-template-columns: 1fr 1fr;
-  margin-bottom: 3rem;
+  padding: 2rem 4rem 0;
 }
 
 .pillar-story-intro-copy {
@@ -1832,6 +1854,14 @@ textarea.form-input {
   flex-direction: column;
   justify-content: center;
   padding: 3rem;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.story-panel-copy h2,
+.story-panel-copy p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .story-panel-index {

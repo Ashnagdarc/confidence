@@ -24,9 +24,63 @@ const socials = [
   },
 ];
 
+type FormStatus = 'idle' | 'loading' | 'success' | 'error';
+
 export default function ContactPage() {
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [formStatus, setFormStatus] = useState<FormStatus>('idle');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    purpose: '',
+    message: '',
+  });
+
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Validate form
+    if (!formData.name || !formData.email || !formData.purpose || !formData.message) {
+      setFormStatus('error');
+      setTimeout(() => setFormStatus('idle'), 3000);
+      return;
+    }
+
+    setFormStatus('loading');
+
+    try {
+      // Simulate API call (replace with actual API endpoint)
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // In production, this would be:
+      // const response = await fetch('/api/contact', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData),
+      // });
+
+      setFormStatus('success');
+      setFormData({ name: '', email: '', purpose: '', message: '' });
+
+      // Reset to idle after 5 seconds
+      setTimeout(() => setFormStatus('idle'), 5000);
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setFormStatus('error');
+      setTimeout(() => setFormStatus('idle'), 3000);
+    }
+  };
 
   useEffect(() => {
     const closeMenuOnResize = () => {
@@ -132,7 +186,7 @@ export default function ContactPage() {
             <div className={styles.formCard}>
               <form
                 className={styles.form}
-                onSubmit={(event) => event.preventDefault()}
+                onSubmit={handleFormSubmit}
               >
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="contact-full-name">
@@ -140,9 +194,14 @@ export default function ContactPage() {
                   </label>
                   <input
                     id="contact-full-name"
+                    name="name"
                     type="text"
                     className={styles.field}
                     placeholder="Jane Smith"
+                    value={formData.name}
+                    onChange={handleFormChange}
+                    required
+                    aria-invalid={formStatus === 'error' && !formData.name ? 'true' : 'false'}
                   />
                 </div>
                 <div className={styles.fieldGroup}>
@@ -154,9 +213,14 @@ export default function ContactPage() {
                   </label>
                   <input
                     id="contact-email-address"
+                    name="email"
                     type="email"
                     className={styles.field}
                     placeholder="yourname@gmail.com"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    required
+                    aria-invalid={formStatus === 'error' && !formData.email}
                   />
                 </div>
                 <div className={styles.fieldGroup}>
@@ -165,8 +229,12 @@ export default function ContactPage() {
                   </label>
                   <select
                     id="contact-purpose"
+                    name="purpose"
                     className={styles.field}
-                    defaultValue=""
+                    value={formData.purpose}
+                    onChange={handleFormChange}
+                    required
+                    aria-invalid={formStatus === 'error' && !formData.purpose}
                   >
                     <option value="">Select an option</option>
                     <option value="speaking">Speaking Engagement</option>
@@ -182,12 +250,34 @@ export default function ContactPage() {
                   </label>
                   <textarea
                     id="contact-message"
+                    name="message"
                     className={styles.textarea}
                     placeholder="Enter your message"
+                    value={formData.message}
+                    onChange={handleFormChange}
+                    required
+                    aria-invalid={formStatus === 'error' && !formData.message}
                   />
                 </div>
-                <button type="submit" className={styles.submit}>
-                  Submit
+
+                {formStatus === 'success' && (
+                  <div className={styles.successMessage}>
+                    ✓ Message sent successfully! I&apos;ll be in touch soon.
+                  </div>
+                )}
+
+                {formStatus === 'error' && (
+                  <div className={styles.errorMessage}>
+                    Please fill out all fields correctly.
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className={styles.submit}
+                  disabled={formStatus === 'loading'}
+                >
+                  {formStatus === 'loading' ? 'Sending…' : 'Submit'}
                 </button>
               </form>
             </div>
