@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -9,8 +10,56 @@ import {
   getBlogPostBySlug,
   getRelatedBlogPosts,
 } from "@/lib/blog";
+import { resolveBlogImageUrl } from "@/sanity/lib/image";
 
 import styles from "../blog.module.css";
+
+const portableTextComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => (
+      <p className={styles.contentParagraph}>{children}</p>
+    ),
+    h2: ({ children }) => (
+      <h2 className={styles.contentHeading}>{children}</h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className={styles.contentSubheading}>{children}</h3>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className={styles.pullQuote}>
+        <p>{children}</p>
+      </blockquote>
+    ),
+  },
+  types: {
+    image: ({ value }) => {
+      const imageUrl = resolveBlogImageUrl(value, {
+        width: 1400,
+        fit: "max",
+      });
+
+      if (!imageUrl) {
+        return null;
+      }
+
+      return (
+        <figure className={styles.inlineImageFigure}>
+          <img
+            src={imageUrl}
+            alt={value.alt ?? ""}
+            className={styles.inlineImage}
+            loading="lazy"
+          />
+          {value.caption ? (
+            <figcaption className={styles.inlineImageCaption}>
+              {value.caption}
+            </figcaption>
+          ) : null}
+        </figure>
+      );
+    },
+  },
+};
 
 type PageProps = {
   params: Promise<{
@@ -18,8 +67,10 @@ type PageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return getAllBlogPosts().map((post) => ({
+export async function generateStaticParams() {
+  const posts = await getAllBlogPosts();
+
+  return posts.map((post) => ({
     slug: post.slug,
   }));
 }
@@ -28,7 +79,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
 
   if (!post) {
     return {
@@ -44,13 +95,13 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
-  const relatedPosts = getRelatedBlogPosts(post.slug, 3);
+  const relatedPosts = await getRelatedBlogPosts(post.slug, 3);
   const publishedLabel = formatBlogDate(post.publishedAt);
 
   return (
@@ -74,28 +125,33 @@ export default async function BlogPostPage({ params }: PageProps) {
             </p>
             <h1 className={styles.readerTitle}>{post.title}</h1>
             <p className={styles.readerIntro}>{post.intro}</p>
+            {post.mainImage ? (
+              <figure className={styles.heroImageFigure}>
+                <img
+                  src={resolveBlogImageUrl(post.mainImage, {
+                    width: 1600,
+                    height: 900,
+                    fit: "crop",
+                  }) ?? ""}
+                  alt={post.mainImage.alt ?? post.title}
+                  className={styles.heroImage}
+                />
+                {post.mainImage.caption ? (
+                  <figcaption className={styles.heroImageCaption}>
+                    {post.mainImage.caption}
+                  </figcaption>
+                ) : null}
+              </figure>
+            ) : null}
           </header>
 
-          <div className={styles.readerBody}>
-            <div className={styles.readerContent}>
-              <blockquote className={styles.pullQuote}>
-                <p>{post.pullQuote}</p>
-              </blockquote>
+          <div className={styles.readerContent}>
+            <blockquote className={styles.pullQuote}>
+              <p>{post.pullQuote}</p>
+            </blockquote>
 
-              {post.sections.map((section) => (
-                <section key={section.heading} className={styles.contentSection}>
-                  <h2 className={styles.contentHeading}>{section.heading}</h2>
-                  {section.paragraphs.map((paragraph) => (
-                    <p key={paragraph} className={styles.contentParagraph}>
-                      {paragraph}
-                    </p>
-                  ))}
-                </section>
-              ))}
-            </div>
-
-            <aside className={styles.readerAside}>
-              <div className={styles.asideCard}>
+            <aside className={styles.readerSummaryCard}>
+              <div className={styles.summaryBlock}>
                 <p className={styles.asideLabel}>Key Takeaways</p>
                 <ul className={styles.takeawayList}>
                   {post.takeaways.map((takeaway) => (
@@ -104,7 +160,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </ul>
               </div>
 
-              <div className={styles.asideCard}>
+              <div className={styles.summaryBlock}>
                 <p className={styles.asideLabel}>Continue the conversation</p>
                 <p className={styles.asideText}>
                   If this article aligns with the kind of market, media, or
@@ -115,6 +171,44 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </Link>
               </div>
             </aside>
+
+            {post.sections?.length
+              ? post.sections.map((section) => (
+                  <section key={section.heading} className={styles.contentSection}>
+                    <h2 className={styles.contentHeading}>{section.heading}</h2>
+                    {section.paragraphs.map((paragraph) => (
+                      <p key={paragraph} className={styles.contentParagraph}>
+                        {paragraph}
+                      </p>
+                    ))}
+                    {section.image ? (
+                      <figure className={styles.inlineImageFigure}>
+                        <img
+                          src={resolveBlogImageUrl(section.image, {
+                            width: 1400,
+                            fit: "max",
+                          }) ?? ""}
+                          alt={section.image.alt ?? section.heading}
+                          className={styles.inlineImage}
+                          loading="lazy"
+                        />
+                        {section.image.caption ? (
+                          <figcaption className={styles.inlineImageCaption}>
+                            {section.image.caption}
+                          </figcaption>
+                        ) : null}
+                      </figure>
+                    ) : null}
+                  </section>
+                ))
+              : post.body?.length
+                ? (
+                    <PortableText
+                      value={post.body}
+                      components={portableTextComponents}
+                    />
+                  )
+                : null}
           </div>
         </article>
 
@@ -138,6 +232,20 @@ export default async function BlogPostPage({ params }: PageProps) {
                 href={`/blog/${relatedPost.slug}`}
                 className={styles.articleCard}
               >
+                {relatedPost.mainImage ? (
+                  <div className={styles.cardMedia}>
+                    <img
+                      src={resolveBlogImageUrl(relatedPost.mainImage, {
+                        width: 960,
+                        height: 620,
+                        fit: "crop",
+                      }) ?? ""}
+                      alt={relatedPost.mainImage.alt ?? relatedPost.title}
+                      className={styles.articleImage}
+                      loading="lazy"
+                    />
+                  </div>
+                ) : null}
                 <p className={styles.articleMeta}>
                   {relatedPost.category} · {formatBlogDate(relatedPost.publishedAt)}
                 </p>

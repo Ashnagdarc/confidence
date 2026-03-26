@@ -1,6 +1,24 @@
+import { cache } from "react";
+import type { PortableTextBlock } from "sanity";
+
+import { isSanityConfigured } from "@/sanity/env";
+import { sanityClient } from "@/sanity/lib/client";
+import { allPostsQuery } from "@/sanity/lib/queries";
+
 export type BlogSection = {
   heading: string;
   paragraphs: string[];
+  image?: BlogImage;
+};
+
+export type BlogImage = {
+  alt?: string;
+  caption?: string;
+  asset?: {
+    _ref?: string;
+    _type?: "reference";
+  };
+  src?: string;
 };
 
 export type BlogPost = {
@@ -9,11 +27,13 @@ export type BlogPost = {
   title: string;
   excerpt: string;
   intro: string;
+  mainImage?: BlogImage;
   publishedAt: string;
   readTime: string;
   pullQuote: string;
   takeaways: string[];
-  sections: BlogSection[];
+  sections?: BlogSection[];
+  body?: PortableTextBlock[];
 };
 
 // Add new post objects here. The blog index, homepage previews, and article pages
@@ -51,6 +71,11 @@ const blogPosts: BlogPost[] = [
           "The wrong way to assess the corridor is to ask, 'How much is this plot today?' The better questions are: what is the quality of title, how close is the asset to confirmed infrastructure, what kind of buyer will exist in five years, and what use case will still make sense when the market matures?",
           "Investors who win here are rarely the loudest. They are the most disciplined. They understand entry timing, they document every transaction properly, and they avoid the emotional rush that usually comes with frontier markets.",
         ],
+        image: {
+          src: "/about/industry-v2.jpg",
+          alt: "Confidence Molade in an orange suit in the Eden Oasis office",
+          caption: "Clarity in strategy is what separates speculative buying from long-hold positioning.",
+        },
       },
       {
         heading: "The next wealth map of Lagos",
@@ -92,6 +117,11 @@ const blogPosts: BlogPost[] = [
           "First, confirm the developer's actual record, not just the marketing language. Visit delivered projects, ask hard questions, and notice the finishing quality. Second, read the documentation line by line: title, allocation terms, refund terms, and handover obligations all matter. Third, match the payment plan to construction reality. If the structure favors the seller completely, caution is justified.",
           "The biggest mistakes in off-plan are rarely technical. They come from urgency. Buyers rush because they fear missing the deal. That emotional posture is exactly what weak projects depend on.",
         ],
+        image: {
+          src: "/works/thought-leadership-market-commentary.jpg",
+          alt: "Confidence Molade speaking with another guest at an event",
+          caption: "Good investment writing is often the result of good diligence, not good phrasing.",
+        },
       },
       {
         heading: "Buy with the end in mind",
@@ -111,6 +141,11 @@ const blogPosts: BlogPost[] = [
       "Leadership is not loudness. It is the quiet discipline of staying clear about who you are while building at a demanding level.",
     intro:
       "People often confuse confidence with performance. I do not. Real confidence is composure under pressure, clarity in decision-making, and a refusal to abandon your values just because growth is accelerating. Building anything meaningful in business will test identity before it rewards skill.",
+    mainImage: {
+      src: "/about/presence.jpg",
+      alt: "Confidence Molade in a white suit against a red studio backdrop",
+      caption: "Presence matters, but only when it is backed by substance and self-command.",
+    },
     publishedAt: "2026-03-10",
     readTime: "5 min read",
     pullQuote:
@@ -134,6 +169,11 @@ const blogPosts: BlogPost[] = [
           "Leadership always looks cleaner from a distance. Up close, it is a sequence of difficult choices, unresolved ambiguity, and emotional restraint. You often have to stay steady for other people before you get the chance to process your own pressure.",
           "That is why inner life matters so much. Faith, reflection, and disciplined routines are not optional extras for me. They are operating systems. They create the margin that allows leadership to stay human instead of becoming performative.",
         ],
+        image: {
+          src: "/about/leadership.jpg",
+          alt: "Confidence Molade in a pink tailored outfit standing in a portrait setting",
+          caption: "The external discipline people admire is usually built in private long before it becomes visible.",
+        },
       },
       {
         heading: "Building without losing yourself",
@@ -194,6 +234,11 @@ const blogPosts: BlogPost[] = [
       "Success without roots becomes performance. Purpose has to be carried with discipline, not sentiment, especially in high-pressure environments.",
     intro:
       "Purpose is easy to describe when life is quiet. The real test comes when deadlines are tight, opportunities are loud, and comparison is everywhere. In those moments, purpose has to function as direction, not decoration. It has to shape decisions, not just language.",
+    mainImage: {
+      src: "/pillars/faith-based-leader-v2.jpg",
+      alt: "Confidence Molade in a poised portrait representing faith and purpose",
+      caption: "Purpose becomes convincing when it survives pressure, not when it sounds poetic.",
+    },
     publishedAt: "2026-02-24",
     readTime: "5 min read",
     pullQuote:
@@ -217,6 +262,11 @@ const blogPosts: BlogPost[] = [
           "Competitive environments reward visibility, speed, and constant comparison. None of those things are inherently bad, but they can gradually move a person away from genuine alignment. You stop asking, 'What is mine to build?' and start asking, 'What is everyone else doing?'",
           "That drift is subtle and dangerous. It produces busy lives with thin meaning. The antidote is regular return: return to conviction, return to prayer, return to the values that shaped your direction before the noise became louder.",
         ],
+        image: {
+          src: "/about/presence.jpg",
+          alt: "Confidence Molade smiling in a white blazer portrait",
+          caption: "The more public the work becomes, the more private alignment matters.",
+        },
       },
       {
         heading: "The quiet strength of rooted ambition",
@@ -259,6 +309,11 @@ const blogPosts: BlogPost[] = [
           "No serious diaspora buyer should operate alone. You need a credible sales partner, legal review, and where necessary an independent verification layer. That team protects you from pressure, confusion, and the false security that sometimes comes from dealing with familiar names.",
           "Trust is not the absence of checks. In professional real estate, trust is strengthened by checks. The more transparent the process is, the safer the investment becomes for everyone involved.",
         ],
+        image: {
+          src: "/works/speaker-conference-keynotes.jpg",
+          alt: "Confidence Molade presenting at a speaking engagement",
+          caption: "Confidence is easier to outsource than verification. Serious buyers do not confuse the two.",
+        },
       },
       {
         heading: "Think beyond purchase day",
@@ -273,21 +328,58 @@ const blogPosts: BlogPost[] = [
 
 export type BlogPreview = Pick<
   BlogPost,
-  "slug" | "category" | "title" | "excerpt" | "publishedAt" | "readTime"
+  | "slug"
+  | "category"
+  | "title"
+  | "excerpt"
+  | "mainImage"
+  | "publishedAt"
+  | "readTime"
 >;
 
-export function getAllBlogPosts() {
-  return [...blogPosts].sort((left, right) =>
+const fallbackBlogPosts = [...blogPosts];
+
+const getSanityPosts = cache(async (): Promise<BlogPost[] | null> => {
+  if (!isSanityConfigured || !sanityClient) {
+    return null;
+  }
+
+  try {
+    const posts = await sanityClient.fetch<BlogPost[]>(allPostsQuery);
+
+    if (!posts.length) {
+      return [];
+    }
+
+    return posts.map((post) => ({
+      ...post,
+      takeaways: post.takeaways ?? [],
+      body: post.body ?? [],
+    }));
+  } catch (error) {
+    console.error("Failed to load Sanity blog posts:", error);
+    return null;
+  }
+});
+
+export async function getAllBlogPosts() {
+  const sanityPosts = await getSanityPosts();
+  const sourcePosts = sanityPosts && sanityPosts.length > 0 ? sanityPosts : fallbackBlogPosts;
+
+  return [...sourcePosts].sort((left, right) =>
     right.publishedAt.localeCompare(left.publishedAt),
   );
 }
 
-export function getBlogPostBySlug(slug: string) {
-  return blogPosts.find((post) => post.slug === slug) ?? null;
+export async function getBlogPostBySlug(slug: string) {
+  const posts = await getAllBlogPosts();
+  return posts.find((post) => post.slug === slug) ?? null;
 }
 
-export function getBlogPostPreviews(): BlogPreview[] {
-  return getAllBlogPosts().map(
+export async function getBlogPostPreviews(): Promise<BlogPreview[]> {
+  const posts = await getAllBlogPosts();
+
+  return posts.map(
     ({ slug, category, title, excerpt, publishedAt, readTime }) => ({
       slug,
       category,
@@ -299,8 +391,10 @@ export function getBlogPostPreviews(): BlogPreview[] {
   );
 }
 
-export function getRelatedBlogPosts(slug: string, count = 3) {
-  return getAllBlogPosts()
+export async function getRelatedBlogPosts(slug: string, count = 3) {
+  const posts = await getAllBlogPosts();
+
+  return posts
     .filter((post) => post.slug !== slug)
     .slice(0, count);
 }

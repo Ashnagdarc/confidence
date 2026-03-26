@@ -6,6 +6,7 @@ import {
   formatBlogDate,
   getAllBlogPosts,
 } from "@/lib/blog";
+import { resolveBlogImageUrl } from "@/sanity/lib/image";
 
 import styles from "./blog.module.css";
 
@@ -15,8 +16,8 @@ export const metadata: Metadata = {
     "Insights from Confidence Molade on real estate, leadership, faith, media, and the future of investment in Lagos.",
 };
 
-export default function BlogIndexPage() {
-  const posts = getAllBlogPosts();
+export default async function BlogIndexPage() {
+  const posts = await getAllBlogPosts();
   const [featuredPost, ...remainingPosts] = posts;
 
   return (
@@ -51,6 +52,20 @@ export default function BlogIndexPage() {
               href={`/blog/${featuredPost.slug}`}
               className={`${styles.articleCard} ${styles.featuredCard}`.trim()}
             >
+              {featuredPost.mainImage ? (
+                <div className={styles.featuredMedia}>
+                  <img
+                    src={resolveBlogImageUrl(featuredPost.mainImage, {
+                      width: 1200,
+                      height: 700,
+                      fit: "crop",
+                    }) ?? ""}
+                    alt={featuredPost.mainImage.alt ?? featuredPost.title}
+                    className={styles.articleImage}
+                    loading="lazy"
+                  />
+                </div>
+              ) : null}
               <p className={styles.articleMeta}>
                 {featuredPost.category} · {formatBlogDate(featuredPost.publishedAt)}
               </p>
@@ -81,6 +96,20 @@ export default function BlogIndexPage() {
                 href={`/blog/${post.slug}`}
                 className={styles.articleCard}
               >
+                {post.mainImage ? (
+                  <div className={styles.cardMedia}>
+                    <img
+                      src={resolveBlogImageUrl(post.mainImage, {
+                        width: 960,
+                        height: 620,
+                        fit: "crop",
+                      }) ?? ""}
+                      alt={post.mainImage.alt ?? post.title}
+                      className={styles.articleImage}
+                      loading="lazy"
+                    />
+                  </div>
+                ) : null}
                 <p className={styles.articleMeta}>
                   {post.category} · {formatBlogDate(post.publishedAt)}
                 </p>

@@ -62,8 +62,12 @@ export function SiteNavbar({
       id={id}
       className={`pillar-page-nav ${navScrolled ? "scrolled" : ""} ${mobileNavOpen ? "mobile-open" : ""}`.trim()}
     >
-      <Link href={logoHref} className="nav-logo" aria-label="Confidence Molade home">
-        <span className="nav-logo-text">Confidence Molade</span>
+      <Link
+        href={logoHref}
+        className="nav-logo"
+        aria-label="Confidence Achodo Molade home"
+      >
+        <span className="nav-logo-text">Confidence Achodo Molade</span>
         <span className="nav-logo-mark" aria-hidden="true">
           <Image
             src="/brand/logo-black.png"
