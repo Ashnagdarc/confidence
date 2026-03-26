@@ -123,7 +123,7 @@
 }
 
 .shell {
-  min-height: max(100vh, 982px);
+  min-height: max(100vh, 940px);
   position: relative;
 }
 
@@ -144,18 +144,19 @@
 }
 
 .portrait {
-  --portrait-transform: translate(-50%, -50%) translateZ(0);
+  --portrait-transform: translateX(-50%) translateZ(0);
   filter: blur(18px) saturate(0.92);
-  left: calc(50% + 26px);
+  bottom: -1.1rem;
+  left: 54.5%;
   opacity: 0.16;
   position: absolute;
-  top: calc(50% + 171px);
+  top: auto;
   transform: var(--portrait-transform) scale(0.96);
   transition:
     filter 1s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.7s ease,
     transform 1.08s cubic-bezier(0.22, 1, 0.36, 1);
-  width: min(135vw, 2040px);
+  width: min(52vw, 980px);
 }
 
 .portraitLoaded {
@@ -235,11 +236,15 @@
 
 @media (max-width: 1200px) {
   .shell {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
+    align-content: start;
+    display: grid;
+    gap: 1.15rem 1.75rem;
+    grid-template-areas:
+      "award summary"
+      "visual visual";
+    grid-template-columns: minmax(0, 23rem) minmax(0, 1fr);
     min-height: auto;
-    padding: 7rem 1.35rem 0;
+    padding: 7.35rem 1.75rem 0;
   }
 
   .summary,
@@ -251,16 +256,19 @@
 
   .award {
     bottom: auto;
+    grid-area: award;
     left: auto;
-    margin-top: 0.35rem;
-    max-width: 26rem;
+    margin-top: 0.15rem;
+    max-width: 23rem;
     order: 1;
     width: auto;
   }
 
   .summary {
-    margin-top: 0.1rem;
-    max-width: 25rem;
+    grid-area: summary;
+    justify-self: end;
+    margin-top: 0;
+    max-width: 20rem;
     order: 2;
     right: auto;
     top: auto;
@@ -271,10 +279,11 @@
   .visualStage {
     align-items: flex-end;
     display: flex;
-    height: 31rem;
+    grid-area: visual;
+    height: clamp(28rem, 56vw, 38rem);
     inset: auto;
     justify-content: center;
-    margin: -1.7rem auto 0;
+    margin: -0.25rem auto 0;
     order: 4;
     overflow: hidden;
     width: 100%;
@@ -283,24 +292,25 @@
   .portrait {
     align-self: flex-end;
     --portrait-transform: none;
+    bottom: -0.75rem;
     margin: 0 auto;
     left: auto;
     position: relative;
     top: auto;
-    transform: var(--portrait-transform) scale(0.96);
-    width: min(124%, 820px);
+    transform: var(--portrait-transform) scale(1);
+    width: min(72vw, 730px);
   }
 
   .title {
-    font-size: clamp(1.9rem, 5vw, 2.9rem);
-    line-height: 0.98;
-    max-width: 28rem;
+    font-size: clamp(1.8rem, 4vw, 2.95rem);
+    line-height: 0.95;
+    max-width: 22rem;
   }
 
   .summaryPrimary {
     font-size: 1rem;
-    line-height: 1.34;
-    max-width: 24rem;
+    line-height: 1.4;
+    max-width: 20rem;
   }
 }
 
@@ -308,27 +318,27 @@
   .shell {
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
-    padding-top: 6.85rem;
+    gap: 0.8rem;
+    padding: 6.45rem 1.25rem 1.75rem;
   }
 
   .summary {
     margin-top: 0;
-    max-width: 20.75rem;
+    max-width: 21rem;
   }
 
   .summaryPrimary {
     font-size: 0.98rem;
     font-weight: 400;
-    line-height: 1.54;
-    max-width: 20.5rem;
+    line-height: 1.52;
+    max-width: 21rem;
   }
 
   .title {
     display: block;
-    font-size: clamp(2rem, 8.5vw, 2.8rem);
-    line-height: 0.93;
-    max-width: 20.5rem;
+    font-size: clamp(1.95rem, 8.1vw, 2.85rem);
+    line-height: 0.94;
+    max-width: 19.5rem;
   }
 
   .titleDesktopLine {
@@ -351,7 +361,7 @@
     font-size: 1rem;
     font-weight: 500;
     justify-content: center;
-    margin-top: 0.65rem;
+    margin-top: 0.35rem;
     min-height: 3.85rem;
     order: 3;
     padding: 0 1.75rem;
@@ -360,13 +370,14 @@
   }
 
   .visualStage {
-    height: 24.5rem;
-    margin-top: -10.5rem;
+    height: clamp(21rem, 92vw, 29rem);
+    margin-top: 0.25rem;
     overflow: hidden;
   }
 
   .portrait {
-    width: min(192%, 800px);
+    bottom: auto;
+    width: min(106%, 570px);
   }
 }
 
@@ -392,52 +403,56 @@
   }
 
   .shell {
-    min-height: 100svh;
-    padding: 6.7rem 1rem 22.9rem;
+    min-height: auto;
+    padding: 6.2rem 1rem 1.35rem;
   }
 
   .award {
-    max-width: 18.75rem;
+    max-width: 17.75rem;
   }
 
   .title {
-    font-size: clamp(2.08rem, 9.2vw, 2.85rem);
-    line-height: 0.93;
-    max-width: 20.25rem;
+    font-size: clamp(1.9rem, 8.8vw, 2.7rem);
+    line-height: 0.95;
+    max-width: 17.5rem;
   }
 
   .summary {
-    max-width: 20.4rem;
+    max-width: 19.5rem;
   }
 
   .summaryPrimary {
-    font-size: 0.98rem;
-    line-height: 1.56;
+    font-size: 0.96rem;
+    line-height: 1.5;
   }
 
   .mobileHeroCta {
-    margin-bottom: 0.35rem;
+    margin-bottom: 0;
     min-height: 3.7rem;
     padding: 0 1.45rem;
   }
 
   .visualStage {
-    bottom: -0.85rem;
-    height: 26.4rem;
-    left: 0;
-    margin-top: 0;
-    position: absolute;
-    right: 0;
+    align-items: flex-end;
+    display: flex;
+    bottom: auto;
+    height: clamp(20.5rem, 94vw, 25rem);
+    justify-content: center;
+    left: auto;
+    margin-top: 0.15rem;
+    overflow: hidden;
+    position: relative;
+    right: auto;
   }
 
   .portrait {
-    bottom: -0.55rem;
+    bottom: -1rem;
     --portrait-transform: translateX(-50%);
     left: 50%;
     margin: 0;
     position: absolute;
-    transform: var(--portrait-transform) scale(0.96);
-    width: min(171%, 730px);
+    transform: var(--portrait-transform) scale(1);
+    width: min(132%, 500px);
   }
 }
 

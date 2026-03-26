@@ -111,7 +111,7 @@ export function SiteFooter() {
           </p>
           <div className="site-footer-bottom-links">
             <span className="site-footer-meta">Lagos, Nigeria</span>
-            <span className="site-footer-meta">Built with purpose.</span>
+            <span className="site-footer-meta">Built by Eden dev team.</span>
           </div>
         </div>
       </div>

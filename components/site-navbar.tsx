@@ -19,6 +19,8 @@ const navSections = [
   { label: "Blog", href: "/blog" },
 ] as const;
 
+const COMPACT_NAV_BREAKPOINT = 1100;
+
 export function SiteNavbar({
   id,
   logoHref,
@@ -31,7 +33,7 @@ export function SiteNavbar({
 
   useEffect(() => {
     const closeMenuOnResize = () => {
-      if (window.innerWidth > 900) {
+      if (window.innerWidth > COMPACT_NAV_BREAKPOINT) {
         setMobileNavOpen(false);
       }
     };

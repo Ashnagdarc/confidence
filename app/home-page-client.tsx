@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { SiteNavbar } from "@/components/site-navbar";
 import { LayeredStack } from "@/components/ui/layered-stack";
+import heroPortrait from "@/images/logos/ANJDSC07558-Edit.png";
 import type { BlogPreview } from "@/lib/blog";
 
 import { pillars } from "./pillars/pillar-data";
@@ -130,8 +131,6 @@ const works: WorkItem[] = [
   },
 ];
 
-const heroPortrait = "/hero/portrait.png";
-
 const pillarImages: Record<string, string> = {
   "faith-based-leader": "/pillars/faith-based-leader-v2.jpg",
   "family-woman": "/pillars/family-woman.jpg",
@@ -160,7 +159,7 @@ function FadeUp({ children, className = "" }: FadeUpProps) {
 export function HomePageClient({ articles }: HomePageClientProps) {
   const [brandIntroStage, setBrandIntroStage] =
     useState<BrandIntroStage>("hidden");
-  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  const heroImageLoaded = true;
 
   useEffect(() => {
     const elements = document.querySelectorAll<HTMLElement>("[data-fade-up]");
@@ -274,12 +273,10 @@ export function HomePageClient({ articles }: HomePageClientProps) {
               >
                 <Image
                   src={heroPortrait}
-                  alt="Confidence Molade in a structured black outfit against a bright studio backdrop"
+                  alt="Confidence Molade seated in a beige suit against a studio backdrop"
                   className={`${heroStyles.image} ${heroStyles.imageBase}`}
-                  width={1512}
-                  height={982}
-                  onLoad={() => setHeroImageLoaded(true)}
-                  onError={() => setHeroImageLoaded(true)}
+                  width={heroPortrait.width}
+                  height={heroPortrait.height}
                   priority
                   sizes="(max-width: 900px) 100vw, 83vw"
                 />
