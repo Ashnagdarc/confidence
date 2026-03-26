@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  PillarIcon,
   getSiblingPillars,
+  pillars,
   type PillarDetail,
 } from "../pillar-data";
 
@@ -18,6 +18,9 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const siblingPillars = useMemo(() => getSiblingPillars(pillar.slug), [pillar.slug]);
+  const currentPillarIndex = pillars.findIndex((entry) => entry.slug === pillar.slug);
+  const totalPillarsLabel = String(pillars.length).padStart(2, "0");
+  const currentPositionLabel = `${pillar.number} / ${totalPillarsLabel}`;
   const heroStyle = useMemo<CSSProperties | undefined>(() => {
     if (pillar.slug === "public-speaker") {
       return {
@@ -77,6 +80,11 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
           "--story-panel-visual-image":
             "url('/pillars/real-estate-mogul-legacy.jpg')",
           "--story-panel-visual-position": "center center",
+        } as CSSProperties,
+        3: {
+          "--story-panel-visual-image":
+            "url('/pillars/real-estate-mogul-trust.jpg')",
+          "--story-panel-visual-position": "34% center",
         } as CSSProperties,
       };
     }
@@ -247,32 +255,56 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
 
         <section className="pillar-page-cta">
           <div className="pillar-page-cta-inner">
-            <div>
-              <p className="section-eyebrow">Continue the Framework</p>
-              <h2 className="h2-lg">
-                Every pillar sharpens a different dimension of her leadership.
-              </h2>
+            <div className="pillar-page-cta-header">
+              <div className="pillar-page-cta-copy-block">
+                <p className="section-eyebrow">Keep reading</p>
+                <h2 className="h2-lg">Move through the pillars.</h2>
+                <p className="pillar-page-cta-copy">
+                  Read the story before or after this one, or go back to all seven.
+                </p>
+              </div>
+              <p
+                className="pillar-page-cta-position"
+                aria-label={`Pillar ${pillar.number} of ${totalPillarsLabel}`}
+              >
+                {currentPositionLabel}
+              </p>
             </div>
-            <div className="pillar-related-grid">
-              {siblingPillars.map((relatedPillar) => (
-                <Link
-                  key={relatedPillar.slug}
-                  href={`/pillars/${relatedPillar.slug}`}
-                  className="pillar-related-card"
-                >
-                  <span className="pillar-related-number">{relatedPillar.number}</span>
-                  <PillarIcon icon={relatedPillar.icon} />
-                  <h3 className="pillar-related-title">{relatedPillar.title}</h3>
-                  <p className="pillar-related-copy">{relatedPillar.summary}</p>
-                </Link>
-              ))}
+
+            <div
+              className={`pillar-related-grid ${siblingPillars.length === 1 ? "single-card" : ""}`.trim()}
+            >
+              {siblingPillars.map((relatedPillar) => {
+                const relatedPillarIndex = pillars.findIndex(
+                  (entry) => entry.slug === relatedPillar.slug,
+                );
+                const isPreviousPillar = relatedPillarIndex < currentPillarIndex;
+
+                return (
+                  <Link
+                    key={relatedPillar.slug}
+                    href={`/pillars/${relatedPillar.slug}`}
+                    className="pillar-related-card"
+                  >
+                    <div className="pillar-related-card-meta">
+                      <span className="pillar-related-direction">
+                        {isPreviousPillar ? "Previous" : "Next"}
+                      </span>
+                      <span className="pillar-related-number">{relatedPillar.number}</span>
+                    </div>
+                    <h3 className="pillar-related-title">{relatedPillar.title}</h3>
+                    <p className="pillar-related-copy">{relatedPillar.shortSummary}</p>
+                  </Link>
+                );
+              })}
             </div>
+
             <div className="pillar-page-links">
               <Link href="/#pillars" className="btn-primary">
-                View all seven pillars
+                All pillars
               </Link>
               <Link href="/contact" className="pillar-ghost-button">
-                Invite Confidence to speak
+                Contact
               </Link>
             </div>
           </div>

@@ -23,6 +23,7 @@ export type PillarDetail = {
   title: string;
   icon: PillarIconKey;
   summary: string;
+  shortSummary: string;
   heroEyebrow: string;
   heroIntro: string;
   quote: string;
@@ -169,6 +170,7 @@ export const pillars: PillarDetail[] = [
     icon: "estate",
     summary:
       "From Lekki corridors to off-plan investments - building wealth and legacies across Nigeria's most dynamic real estate landscape.",
+    shortSummary: "Helping people move in property with clarity.",
     heroEyebrow: "Pillar 01 · Wealth With Foresight",
     heroIntro:
       "Confidence approaches real estate like infrastructure for the future: every site, title, and payment structure has to hold under pressure. What looks like sales on the outside is, underneath, a disciplined system for helping people move capital with clarity.",
@@ -217,6 +219,7 @@ export const pillars: PillarDetail[] = [
     icon: "speaker",
     summary:
       "A commanding voice on investment, entrepreneurship, and the future of African real estate - from boardrooms to national stages.",
+    shortSummary: "Speaking with clarity about growth and real estate.",
     heroEyebrow: "Pillar 02 · Voice With Direction",
     heroIntro:
       "Confidence does not step on stage to perform confidence; she steps on stage to transfer it. Her speaking is built to move people from uncertainty to decision, with messages that stay clear under the lights and still make sense after the applause ends.",
@@ -265,6 +268,7 @@ export const pillars: PillarDetail[] = [
     icon: "thought",
     summary:
       "Pioneering conversations on Nigeria's property market, tax reform, diaspora investment, and the economics of New Lagos.",
+    shortSummary: "Sharing clear market thinking people can use.",
     heroEyebrow: "Pillar 03 · Signal Above Noise",
     heroIntro:
       "Thought leadership, in Confidence's world, means saying something useful before the crowd catches up. She pays attention to patterns, translates policy into consequences, and helps her audience understand where the market is going and why it matters.",
@@ -313,6 +317,7 @@ export const pillars: PillarDetail[] = [
     icon: "creator",
     summary:
       "Host of The KK Show - Key to Keys podcast. Educating thousands weekly on smart, safe real estate investment across Nigeria.",
+    shortSummary: "Teaching smart property moves through steady content.",
     heroEyebrow: "Pillar 04 · Education At Scale",
     heroIntro:
       "Content is where Confidence multiplies access. Through recurring media, interviews, breakdowns, and market education, she reaches people who may never enter a boardroom but still need trustworthy guidance for serious decisions.",
@@ -361,6 +366,7 @@ export const pillars: PillarDetail[] = [
     icon: "style",
     summary:
       "Elegance as a language. Presence as a strategy. Confidence curates a personal aesthetic that commands every room she enters.",
+    shortSummary: "Using style to reflect presence and discipline.",
     heroEyebrow: "Pillar 05 · Presence With Intent",
     heroIntro:
       "Style, for Confidence, is not decorative excess. It is a disciplined expression of identity, standards, and self-respect. She understands that presentation can either dilute authority or reinforce it, and she chooses the latter every time.",
@@ -409,6 +415,7 @@ export const pillars: PillarDetail[] = [
     icon: "faith",
     summary:
       "Rooted in conviction, guided by grace. Her faith is not a department - it is the foundation from which every other pillar rises.",
+    shortSummary: "Leading from faith, grace, and steady conviction.",
     heroEyebrow: "Pillar 06 · Conviction At The Core",
     heroIntro:
       "Faith is not a branding layer in Confidence's life. It is the foundation underneath every public role she carries. It shapes how she chooses, how she endures pressure, and how she understands success beyond visible achievement.",
@@ -457,6 +464,7 @@ export const pillars: PillarDetail[] = [
     icon: "family",
     summary:
       "At the centre of it all - a woman who knows that a life of greatness and a life of love are not a contradiction, but a calling.",
+    shortSummary: "Building success without losing home or love.",
     heroEyebrow: "Pillar 07 · Love As Legacy",
     heroIntro:
       "Confidence rejects the false trade-off between significance and intimacy. She believes a meaningful public life should deepen, not destroy, the people closest to you. That conviction shapes how she builds success and how she defines it.",

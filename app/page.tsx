@@ -27,6 +27,9 @@ type WorkItem = {
   title: string;
   label: string;
   description: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  imagePosition?: string;
 };
 
 type Article = {
@@ -63,9 +66,9 @@ const aboutGallery: GalleryItem[] = [
   },
   {
     caption: "Industry",
-    alt: "Confidence Molade in an orange suit and hard hat inside a real estate project office",
-    imageSrc: "/about/industry.jpg",
-    objectPosition: "center 24%",
+    alt: "Confidence Molade in an orange suit smiling in a modern office setting",
+    imageSrc: "/about/industry-v2.jpg",
+    objectPosition: "center 16%",
   },
   {
     caption: "Presence",
@@ -89,6 +92,10 @@ const works: WorkItem[] = [
     label: "KK Show",
     description:
       "Nigeria's sharpest weekly real estate podcast, hosted by Confidence every Thursday at 7 PM. Featuring developers, investors, and policy voices — available on Apple Podcasts, Spotify, and YouTube.",
+    imageSrc: "/works/kk-show-key-to-keys.jpg",
+    imageAlt:
+      "Confidence Molade hosting an episode of the KK Show podcast in a studio",
+    imagePosition: "center center",
   },
   {
     tag: "Public Speaking · Events",
@@ -96,6 +103,10 @@ const works: WorkItem[] = [
     label: "Speaking",
     description:
       "From Women in Business forums to real estate investment summits, Confidence delivers talks that combine data, story, and lived experience to shift mindsets and unlock action in her audiences.",
+    imageSrc: "/works/speaker-conference-keynotes.jpg",
+    imageAlt:
+      "Confidence Molade on stage at a real estate conference panel discussion",
+    imagePosition: "center 26%",
   },
   {
     tag: "Property Marketing · Chevron Lekki",
@@ -110,6 +121,10 @@ const works: WorkItem[] = [
     label: "Thought Leadership",
     description:
       "Widely shared analysis on Nigeria's tax reform landscape, the New Lagos corridor, shortlet economics, and the future of off-plan investing — writing that positions Eden Oasis at the intersection of intelligence and action.",
+    imageSrc: "/works/thought-leadership-market-commentary.jpg",
+    imageAlt:
+      "Confidence Molade reviewing content with another guest at an event",
+    imagePosition: "center 22%",
   },
 ];
 
@@ -158,13 +173,14 @@ const pillarImages: Record<string, string> = {
   "faith-based-leader": "/pillars/faith-based-leader-v2.jpg",
   "family-woman": "/pillars/family-woman.jpg",
   "public-speaker": "/Speaker.jpg",
-  "real-estate-mogul": "/pillars/real-estate-mogul.jpg",
+  "real-estate-mogul": "/pillars/real-estate-mogul-v3.jpg",
   "style-icon": "/pillars/style-icon.jpg",
   "thought-leader": "/pillars/thought-leader.jpg",
   "content-creator": "/pillars/content-creator.jpg",
 };
 
 const pillarImagePositions: Record<string, string> = {
+  "real-estate-mogul": "42% center",
   "style-icon": "center center",
   "faith-based-leader": "center center",
   "family-woman": "center center",
@@ -352,57 +368,73 @@ export default function Home() {
         </section>
 
         <section id="about" data-scroll-section>
-          <FadeUp>
-            <p className="section-eyebrow">Who She Is</p>
-            <h2 className="h2-xl">
-              More Than a Name.
-              <br />
-              A Standard.
-            </h2>
-            <blockquote className="about-quote">
-              &quot;My name is Confidence — and if you would let me, I would love
-              to lead you into your untapped potential.&quot;
-            </blockquote>
-            <p className="body-text">
-             As CEO and Co-Founder of Eden Oasis Realty, she has helped redefine real estate in Nigeria —
-not just as a transaction, but as a pathway to legacy. She began her career as an electrical
-engineer, crossed industries, and built one of Lagos's most recognized real estate brands from the
-ground up. But she has never been just a businesswoman. 
-            </p>
-            <p className="body-text about-secondary-copy">
-              She is a speaker who moves rooms. A content creator who educates with clarity. A thought leader
-whose voice cuts through noise. A style icon who understands that how you show up is part of
+          <FadeUp className="about-copy">
+            <div className="about-copy-shell">
+              <div className="about-copy-header">
+                <p className="section-eyebrow">Who She Is</p>
+                <h2 className="h2-xl">
+                  More Than a Name.
+                  <br />
+                  A Standard.
+                </h2>
+              </div>
 
-your message. A woman of deep faith who leads from conviction. And above everything else, a
-devoted wife and mother who knows that everything built outside the home must first be rooted
-inside it.
-            </p>
-            <div className="credentials">
-              {credentials.map((credential) => (
-                <span key={credential} className="credential-pill">
-                  {credential}
-                </span>
-              ))}
+              <div className="about-quote-card">
+                <blockquote className="about-quote">
+                  My name is Confidence — and if you would let me, I would love
+                  to lead you into your untapped potential.
+                </blockquote>
+              </div>
+
+              <div className="about-body">
+                <p className="body-text about-primary-copy">
+                  As CEO and Co-Founder of Eden Oasis Realty, she has helped
+                  redefine real estate in Nigeria, not just as a transaction,
+                  but as a pathway to legacy. She began her career as an
+                  electrical engineer, crossed industries, and built one of
+                  Lagos&apos;s most recognized real estate brands from the ground
+                  up. But she has never been just a businesswoman.
+                </p>
+                <p className="body-text about-secondary-copy">
+                  She is a speaker who moves rooms. A content creator who
+                  educates with clarity. A thought leader whose voice cuts
+                  through noise. A style icon who understands that how you show
+                  up is part of your message. A woman of deep faith who leads
+                  from conviction. And above everything else, a devoted wife and
+                  mother who knows that everything built outside the home must
+                  first be rooted inside it.
+                </p>
+              </div>
+
+              <ul className="credentials" aria-label="Key credentials">
+                {credentials.map((credential) => (
+                  <li key={credential} className="credential-pill">
+                    {credential}
+                  </li>
+                ))}
+              </ul>
             </div>
           </FadeUp>
 
           <FadeUp className="about-right">
             <div className="about-image-grid">
               {aboutGallery.map((item) => (
-                <div
+                <figure
                   key={item.caption}
-                  className={`about-img-block ${item.large ? "about-img-large" : ""}`}
+                  className={`about-img-block ${item.large ? "about-img-large" : ""}`.trim()}
                 >
                   <Image
                     src={item.imageSrc}
                     alt={item.alt}
                     className="about-img-media"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, (max-width: 1100px) 44vw, 34vw"
                     style={{ objectPosition: item.objectPosition ?? "center center" }}
                   />
-                  <span className="about-img-caption">{item.caption}</span>
-                </div>
+                  <figcaption className="about-img-caption">
+                    {item.caption}
+                  </figcaption>
+                </figure>
               ))}
             </div>
           </FadeUp>
@@ -515,9 +547,24 @@ inside it.
 
           <FadeUp className="works-grid">
             {works.map((work, index) => (
-              <article key={work.title} className={`work-card ${index === 0 ? "work-card-featured" : ""}`}>
+              <article
+                key={work.title}
+                className={`work-card ${index === 0 ? "work-card-featured" : ""} ${work.imageSrc ? "work-card-with-image" : ""}`.trim()}
+              >
                 <div className="work-img">
-                  <div className="work-img-inner">
+                  <div className={`work-img-inner ${work.imageSrc ? "has-work-image" : ""}`.trim()}>
+                    {work.imageSrc ? (
+                      <Image
+                        src={work.imageSrc}
+                        alt={work.imageAlt ?? work.title}
+                        className="work-img-media"
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 900px) 100vw, 33vw"
+                        style={{
+                          objectPosition: work.imagePosition ?? "center center",
+                        }}
+                      />
+                    ) : null}
                     <p className="work-img-label">{work.label}</p>
                   </div>
                 </div>
