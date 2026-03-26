@@ -19,42 +19,69 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const siblingPillars = useMemo(() => getSiblingPillars(pillar.slug), [pillar.slug]);
   const heroStyle = useMemo<CSSProperties | undefined>(() => {
-    if (pillar.slug !== "public-speaker") {
-      return undefined;
+    if (pillar.slug === "public-speaker") {
+      return {
+        "--pillar-hero-image": "url('/pillars/public-speaker-hero.jpg')",
+        "--pillar-hero-position": "center 18%",
+      } as CSSProperties;
     }
 
-    return {
-      "--pillar-hero-image": "url('/pillars/public-speaker-hero.jpg')",
-      "--pillar-hero-position": "center 18%",
-    } as CSSProperties;
+    if (pillar.slug === "real-estate-mogul") {
+      return {
+        "--pillar-hero-image": "url('/pillars/real-estate-mogul-hero-v2.jpg')",
+        "--pillar-hero-position": "center center",
+      } as CSSProperties;
+    }
+
+    return undefined;
   }, [pillar.slug]);
   const storyPanelStyles = useMemo<Partial<Record<number, CSSProperties>>>(() => {
-    if (pillar.slug !== "public-speaker") {
-      return {};
+    if (pillar.slug === "public-speaker") {
+      return {
+        0: {
+          "--story-panel-visual-image":
+            "url('/pillars/public-speaker-clarity.jpg')",
+          "--story-panel-visual-position": "center center",
+        } as CSSProperties,
+        1: {
+          "--story-panel-visual-image":
+            "url('/pillars/public-speaker-stagecraft.jpg')",
+          "--story-panel-visual-position": "center center",
+        } as CSSProperties,
+        2: {
+          "--story-panel-visual-image":
+            "url('/pillars/public-speaker-message-design.jpg')",
+          "--story-panel-visual-position": "center center",
+        } as CSSProperties,
+        3: {
+          "--story-panel-visual-image":
+            "url('/pillars/public-speaker-impact.jpg')",
+          "--story-panel-visual-position": "center center",
+        } as CSSProperties,
+      };
     }
 
-    return {
-      0: {
-        "--story-panel-visual-image":
-          "url('/pillars/public-speaker-clarity.jpg')",
-        "--story-panel-visual-position": "center center",
-      } as CSSProperties,
-      1: {
-        "--story-panel-visual-image":
-          "url('/pillars/public-speaker-stagecraft.jpg')",
-        "--story-panel-visual-position": "center center",
-      } as CSSProperties,
-      2: {
-        "--story-panel-visual-image":
-          "url('/pillars/public-speaker-message-design.jpg')",
-        "--story-panel-visual-position": "center center",
-      } as CSSProperties,
-      3: {
-        "--story-panel-visual-image":
-          "url('/pillars/public-speaker-impact.jpg')",
-        "--story-panel-visual-position": "center center",
-      } as CSSProperties,
-    };
+    if (pillar.slug === "real-estate-mogul") {
+      return {
+        0: {
+          "--story-panel-visual-image":
+            "url('/pillars/real-estate-mogul-vision-v2.jpg')",
+          "--story-panel-visual-position": "center center",
+        } as CSSProperties,
+        1: {
+          "--story-panel-visual-image":
+            "url('/pillars/real-estate-mogul-discipline.jpg')",
+          "--story-panel-visual-position": "center center",
+        } as CSSProperties,
+        2: {
+          "--story-panel-visual-image":
+            "url('/pillars/real-estate-mogul-legacy.jpg')",
+          "--story-panel-visual-position": "center center",
+        } as CSSProperties,
+      };
+    }
+
+    return {};
   }, [pillar.slug]);
 
   useEffect(() => {

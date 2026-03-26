@@ -155,7 +155,7 @@ const articles: Article[] = [
 const heroPortrait = "/hero/portrait.png";
 
 const pillarImages: Record<string, string> = {
-  "faith-based-leader": "/pillars/faith-based-leader.jpg",
+  "faith-based-leader": "/pillars/faith-based-leader-v2.jpg",
   "family-woman": "/pillars/family-woman.jpg",
   "public-speaker": "/Speaker.jpg",
   "real-estate-mogul": "/pillars/real-estate-mogul.jpg",
@@ -232,9 +232,9 @@ export default function Home() {
     <>
       <nav
         id="navbar"
-        className={`home-hero-nav ${navScrolled ? "scrolled" : ""} ${mobileNavOpen ? "mobile-open" : ""}`.trim()}
+        className={`pillar-page-nav ${navScrolled ? "scrolled" : ""} ${mobileNavOpen ? "mobile-open" : ""}`.trim()}
       >
-        <a href="#home" className="nav-logo home-hero-wordmark">
+        <a href="#home" className="nav-logo">
           Confidence Molade
         </a>
         <ul className="nav-links">
