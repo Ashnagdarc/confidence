@@ -142,16 +142,68 @@ nav.scrolled {
 }
 
 .nav-logo {
+  align-items: center;
   color: var(--charcoal);
+  display: inline-grid;
+  flex: 0 0 clamp(10.8rem, 14vw, 12.6rem);
   font-family: var(--display);
   font-size: 1.15rem;
   font-weight: 400;
+  height: 2.75rem;
+  justify-items: start;
   letter-spacing: 0.08em;
+  overflow: hidden;
+  position: relative;
   text-decoration: none;
+  transition: color 0.3s ease;
+  width: clamp(10.8rem, 14vw, 12.6rem);
 }
 
-.nav-logo span {
-  color: var(--gold);
+.nav-logo-text,
+.nav-logo-mark {
+  grid-area: 1 / 1;
+}
+
+.nav-logo-text {
+  transform-origin: left center;
+  transition:
+    opacity 0.28s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.25s ease;
+  white-space: nowrap;
+}
+
+.nav-logo-mark {
+  align-items: center;
+  display: flex;
+  height: 2.75rem;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-0.35rem) scale(0.82);
+  transition:
+    opacity 0.28s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  width: 2.75rem;
+}
+
+.nav-logo-image {
+  height: auto;
+  width: 100%;
+}
+
+.nav-logo:hover .nav-logo-text,
+.nav-logo:focus-visible .nav-logo-text,
+nav.scrolled .nav-logo .nav-logo-text {
+  opacity: 0;
+  transform: translateX(0.55rem) scale(0.78);
+}
+
+.nav-logo:hover .nav-logo-mark,
+.nav-logo:focus-visible .nav-logo-mark,
+nav.scrolled .nav-logo .nav-logo-mark {
+  opacity: 1;
+  transform: translateX(0) scale(1);
 }
 
 .nav-links {
@@ -259,13 +311,18 @@ nav.pillar-page-nav {
   border-bottom: 0.5px solid var(--border-accent-soft);
 }
 
-nav.pillar-page-nav .nav-logo span,
+nav.pillar-page-nav .nav-logo:hover .nav-logo-text,
+nav.pillar-page-nav .nav-logo:focus-visible .nav-logo-text,
 nav.pillar-page-nav .nav-links a:hover {
   color: var(--gold);
 }
 
 nav.pillar-page-nav .nav-links a:focus-visible {
   color: var(--gold);
+}
+
+nav.pillar-page-nav .nav-logo-image {
+  filter: brightness(0) invert(1);
 }
 
 nav.pillar-page-nav .mobile-nav-toggle span {
@@ -1466,6 +1523,12 @@ h2 {
   grid-template-columns: 1.5fr 1fr 1fr;
 }
 
+.blog-card-link {
+  color: inherit;
+  display: block;
+  text-decoration: none;
+}
+
 .blog-card {
   border-top: 0.5px solid var(--border-accent-subtle);
   padding-top: 1.8rem;
@@ -2500,6 +2563,21 @@ textarea.form-input {
   nav {
     padding-top: 1.2rem;
     padding-bottom: 1.2rem;
+  }
+
+  .nav-logo {
+    flex-basis: 2.75rem;
+    width: 2.75rem;
+  }
+
+  .nav-logo-text {
+    opacity: 0;
+    transform: translateX(0.55rem) scale(0.78);
+  }
+
+  .nav-logo-mark {
+    opacity: 1;
+    transform: translateX(0) scale(1);
   }
 
   .pillar-page-nav .nav-links,

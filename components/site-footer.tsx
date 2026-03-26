@@ -4,7 +4,7 @@ const footerNav = [
   { label: "Home", href: "/#home" },
   { label: "7 Pillars", href: "/#pillars" },
   { label: "Works", href: "/#works" },
-  { label: "Blog", href: "/#blog" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -14,16 +14,16 @@ const footerSocials = [
     href: "https://www.instagram.com/achodoconfidence_realtor/",
   },
   {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/confidence-achodo-b82b65a4/",
-  },
-  {
     label: "Podcast",
-    href: "https://podcasts.apple.com/ng/podcast/the-kk-show-key-to-keys/id1761369506",
+    href: "https://www.edenoasisrealty.com/the-kk-show/",
   },
   {
-    label: "Twitter / X",
-    href: "https://x.com/achodoconfidenc",
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/confidence-achodo-b82b65a4?originalSubdomain=ng",
+  },
+  {
+    label: "Eden Oasis",
+    href: "https://www.edenoasisrealty.com/",
   },
 ];
 
@@ -38,7 +38,7 @@ const footerReach = [
   },
   {
     label: "Eden Oasis Realty",
-    href: "https://edenoasisrealty.com",
+    href: "https://www.edenoasisrealty.com/",
   },
   {
     label: "Podcast Enquiries",

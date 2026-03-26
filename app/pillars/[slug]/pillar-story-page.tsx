@@ -2,7 +2,9 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+
+import { SiteNavbar } from "@/components/site-navbar";
 
 import {
   getSiblingPillars,
@@ -15,8 +17,6 @@ type PillarStoryPageProps = {
 };
 
 export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
-  const [navScrolled, setNavScrolled] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const siblingPillars = useMemo(() => getSiblingPillars(pillar.slug), [pillar.slug]);
   const currentPillarIndex = pillars.findIndex((entry) => entry.slug === pillar.slug);
   const totalPillarsLabel = String(pillars.length).padStart(2, "0");
@@ -92,101 +92,14 @@ export function PillarStoryPage({ pillar }: PillarStoryPageProps) {
     return {};
   }, [pillar.slug]);
 
-  useEffect(() => {
-    const closeMenuOnResize = () => {
-      if (window.innerWidth > 900) {
-        setMobileNavOpen(false);
-      }
-    };
-
-    window.addEventListener("resize", closeMenuOnResize);
-
-    return () => {
-      window.removeEventListener("resize", closeMenuOnResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    const updateNav = () => {
-      setNavScrolled(window.scrollY > 24);
-    };
-
-    updateNav();
-    window.addEventListener("scroll", updateNav, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", updateNav);
-    };
-  }, []);
-
   return (
     <div className="pillar-page">
-      <nav
-        className={`pillar-page-nav ${navScrolled ? "scrolled" : ""} ${mobileNavOpen ? "mobile-open" : ""}`.trim()}
-      >
-        <Link href="/" className="nav-logo">
-          Confidence Molade
-        </Link>
-        <ul className="nav-links">
-          <li>
-            <Link href="/#home">Home</Link>
-          </li>
-          <li>
-            <Link href="/#pillars">7 Pillars</Link>
-          </li>
-          <li>
-            <Link href="/#works">Works</Link>
-          </li>
-          <li>
-            <Link href="/#blog">Blog</Link>
-          </li>
-          <li>
-            <Link href="/contact">Contact</Link>
-          </li>
-        </ul>
-        <Link href="/contact" className="nav-cta">
-          Let&apos;s Connect
-        </Link>
-        <button
-          type="button"
-          className="mobile-nav-toggle"
-          aria-expanded={mobileNavOpen}
-          aria-controls="pillar-mobile-nav-panel"
-          aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
-          onClick={() => setMobileNavOpen((open) => !open)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-        <div
-          id="pillar-mobile-nav-panel"
-          className={`mobile-nav-panel ${mobileNavOpen ? "open" : ""}`.trim()}
-        >
-          <Link href="/#home" onClick={() => setMobileNavOpen(false)}>
-            Home
-          </Link>
-          <Link href="/#pillars" onClick={() => setMobileNavOpen(false)}>
-            7 Pillars
-          </Link>
-          <Link href="/#works" onClick={() => setMobileNavOpen(false)}>
-            Works
-          </Link>
-          <Link href="/#blog" onClick={() => setMobileNavOpen(false)}>
-            Blog
-          </Link>
-          <Link href="/contact" onClick={() => setMobileNavOpen(false)}>
-            Contact
-          </Link>
-          <Link
-            href="/contact"
-            className="mobile-nav-cta"
-            onClick={() => setMobileNavOpen(false)}
-          >
-            Let&apos;s Connect
-          </Link>
-        </div>
-      </nav>
+      <SiteNavbar
+        logoHref="/"
+        mobilePanelId="pillar-mobile-nav-panel"
+        scrollThreshold={24}
+        sectionPrefix="/"
+      />
 
       <main>
         <section className="pillar-hero" style={heroStyle}>

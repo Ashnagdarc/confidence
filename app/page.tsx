@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 
+import { SiteNavbar } from "@/components/site-navbar";
 import { LayeredStack } from "@/components/ui/layered-stack";
+import { getBlogPostPreviews } from "@/lib/blog";
 
 import { pillars } from "./pillars/pillar-data";
 import heroStyles from "./hero.module.css";
@@ -32,16 +34,12 @@ type WorkItem = {
   imagePosition?: string;
 };
 
-type Article = {
-  category: string;
-  title: string;
-  excerpt: string;
-};
-
 type FadeUpProps = {
   children: ReactNode;
   className?: string;
 };
+
+type BrandIntroStage = "hidden" | "active" | "exit";
 
 const stats: Stat[] = [
   { value: "10+", label: "Years in Real Estate" },
@@ -128,44 +126,7 @@ const works: WorkItem[] = [
   },
 ];
 
-const articles: Article[] = [
-  {
-    category: "Featured Essay",
-    title: "Why the New Lagos Corridor Is the Most Important Real Estate Story in Africa Right Now",
-    excerpt:
-      "The infrastructure connecting Lekki Free Trade Zone, Ibeju-Lekki, and Epe is not a story about land. It is a story about the next generation of Nigerian wealth — and where it will be built. Here is what no one is telling you.",
-  },
-  {
-    category: "Market Watch",
-    title: "The Truth About Off-Plan Investment in Lagos — What Buyers Must Know",
-    excerpt:
-      "Off-plan promises are only as good as the developer behind them. Here is a no-nonsense framework for evaluating risk before you commit a single naira.",
-  },
-  {
-    category: "Leadership",
-    title: "Confidence as a Career: How I Built a Real Estate Empire Without Losing Myself",
-    excerpt:
-      "Leadership is not loudness. This is the story of how a disciplined faith, a clear vision, and relentless consistency built something that lasts.",
-  },
-  {
-    category: "Women in Business",
-    title: "The Banana Island Shortlet Ban: What It Signals for the Nigerian Luxury Market",
-    excerpt:
-      "Regulation follows demand. And this particular regulation tells us something important about where premium real estate in Lagos is headed — and what investors should do now.",
-  },
-  {
-    category: "Faith & Purpose",
-    title: "7 Things I Know About Carrying Purpose in a Competitive World",
-    excerpt:
-      "Success without roots is just performance. These are the seven truths that anchor me when the pressure is highest and the stakes are real.",
-  },
-  {
-    category: "Diaspora Investor Series",
-    title: "Nigerians in the Diaspora: A Step-By-Step Guide to Buying Property Safely From Abroad",
-    excerpt:
-      "Distance is not a barrier. Ignorance is. Here is the complete guide to protecting your diaspora investment from title to keys — with no excuses left.",
-  },
-];
+const articles = getBlogPostPreviews();
 
 const heroPortrait = "/hero/portrait.png";
 
@@ -195,17 +156,11 @@ function FadeUp({ children, className = "" }: FadeUpProps) {
 }
 
 export default function Home() {
-  const [navScrolled, setNavScrolled] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [brandIntroStage, setBrandIntroStage] =
+    useState<BrandIntroStage>("hidden");
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setNavScrolled(window.scrollY > 50);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
     const elements = document.querySelectorAll<HTMLElement>("[data-fade-up]");
     const observer = new IntersectionObserver(
       (entries) => {
@@ -225,106 +180,104 @@ export default function Home() {
     });
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
       observer.disconnect();
     };
   }, []);
 
   useEffect(() => {
-    const closeMenuOnResize = () => {
-      if (window.innerWidth > 900) {
-        setMobileNavOpen(false);
-      }
-    };
+    let exitTimer: number | undefined;
+    let hideTimer: number | undefined;
 
-    window.addEventListener("resize", closeMenuOnResize);
+    try {
+      const introKey = "confidence-brand-intro-v1";
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (prefersReducedMotion || sessionStorage.getItem(introKey) === "seen") {
+        return;
+      }
+
+      sessionStorage.setItem(introKey, "seen");
+      setBrandIntroStage("active");
+
+      exitTimer = window.setTimeout(() => {
+        setBrandIntroStage("exit");
+      }, 420);
+
+      hideTimer = window.setTimeout(() => {
+        setBrandIntroStage("hidden");
+      }, 920);
+    } catch {
+      setBrandIntroStage("hidden");
+    }
 
     return () => {
-      window.removeEventListener("resize", closeMenuOnResize);
+      if (exitTimer) {
+        window.clearTimeout(exitTimer);
+      }
+
+      if (hideTimer) {
+        window.clearTimeout(hideTimer);
+      }
     };
   }, []);
 
   return (
     <>
-      <nav
-        id="navbar"
-        className={`pillar-page-nav ${navScrolled ? "scrolled" : ""} ${mobileNavOpen ? "mobile-open" : ""}`.trim()}
-      >
-        <a href="#home" className="nav-logo">
-          Confidence Molade
-        </a>
-        <ul className="nav-links">
-          <li>
-            <a href="#home">Home</a>
-          </li>
-          <li>
-            <a href="#pillars">7 Pillars</a>
-          </li>
-          <li>
-            <a href="#works">Works</a>
-          </li>
-          <li>
-            <a href="#blog">Blog</a>
-          </li>
-          <li>
-            <Link href="/contact">Contact</Link>
-          </li>
-        </ul>
-        <Link href="/contact" className="nav-cta">
-          Let&apos;s Connect
-        </Link>
-        <button
-          type="button"
-          className="mobile-nav-toggle"
-          aria-expanded={mobileNavOpen}
-          aria-controls="mobile-nav-panel"
-          aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
-          onClick={() => setMobileNavOpen((open) => !open)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
+      {brandIntroStage !== "hidden" ? (
         <div
-          id="mobile-nav-panel"
-          className={`mobile-nav-panel ${mobileNavOpen ? "open" : ""}`.trim()}
+          aria-hidden="true"
+          className={`${heroStyles.brandIntro} ${
+            brandIntroStage === "active" ? heroStyles.brandIntroActive : heroStyles.brandIntroExit
+          }`.trim()}
         >
-          <a href="#home" onClick={() => setMobileNavOpen(false)}>
-            Home
-          </a>
-          <a href="#pillars" onClick={() => setMobileNavOpen(false)}>
-            7 Pillars
-          </a>
-          <a href="#works" onClick={() => setMobileNavOpen(false)}>
-            Works
-          </a>
-          <a href="#blog" onClick={() => setMobileNavOpen(false)}>
-            Blog
-          </a>
-          <Link href="/contact" onClick={() => setMobileNavOpen(false)}>
-            Contact
-          </Link>
-          <Link
-            href="/contact"
-            className="mobile-nav-cta"
-            onClick={() => setMobileNavOpen(false)}
-          >
-            Let&apos;s Connect
-          </Link>
+          <div className={heroStyles.brandIntroInner}>
+            <div className={heroStyles.brandIntroMark}>
+              <Image
+                src="/brand/logo-black.png"
+                alt=""
+                width={120}
+                height={120}
+                className={heroStyles.brandIntroImage}
+                priority
+              />
+            </div>
+            <p className={heroStyles.brandIntroWordmark}>Confidence Molade</p>
+          </div>
         </div>
-      </nav>
+      ) : null}
+
+      <SiteNavbar
+        id="navbar"
+        logoHref="#home"
+        mobilePanelId="home-mobile-nav-panel"
+        scrollThreshold={50}
+        sectionPrefix=""
+      />
 
       <main>
         <section id="home" className={heroStyles.heroSection}>
           <div className={heroStyles.shell}>
-            <div className={heroStyles.visualStage} aria-hidden="true">
-              <div className={heroStyles.portrait}>
+            <div
+              className={`${heroStyles.visualStage} ${
+                heroImageLoaded ? heroStyles.visualStageLoaded : ""
+              }`.trim()}
+              aria-hidden="true"
+            >
+              <div
+                className={`${heroStyles.portrait} ${
+                  heroImageLoaded ? heroStyles.portraitLoaded : ""
+                }`.trim()}
+              >
                 <Image
                   src={heroPortrait}
                   alt="Confidence Molade in a structured black outfit against a bright studio backdrop"
                   className={`${heroStyles.image} ${heroStyles.imageBase}`}
                   width={1512}
                   height={982}
+                  onLoad={() => setHeroImageLoaded(true)}
+                  onError={() => setHeroImageLoaded(true)}
                   priority
                   sizes="(max-width: 900px) 100vw, 83vw"
                 />
@@ -340,10 +293,6 @@ export default function Home() {
             </div>
 
             <div className={heroStyles.award}>
-              <div className={heroStyles.availabilityChip}>
-                <span aria-hidden="true" className={heroStyles.availabilityDot} />
-                <span>Available for collaboration</span>
-              </div>
               <h1 className={heroStyles.title}>
                 <span className={heroStyles.titleDesktopLine}>
                   Award-Winning Luxury
@@ -591,21 +540,29 @@ export default function Home() {
                 Worth Having
               </h2>
             </div>
-            <span className="btn-ghost btn-ghost-disabled" aria-disabled="true">
-              Articles Coming Soon
-            </span>
+            <Link href="/blog" className="btn-ghost">
+              View All Articles
+            </Link>
           </FadeUp>
 
           <FadeUp className="blog-grid">
             {articles.map((article, index) => (
-              <article key={article.title} className={`blog-card ${index === 0 ? "blog-card-featured" : ""}`}>
-                <p className="blog-date">{article.category}</p>
-                <h3 className="blog-title">{article.title}</h3>
-                <p className="blog-excerpt">{article.excerpt}</p>
-                <span className="read-more read-more-disabled" aria-disabled="true">
-                  Publishing Soon
-                </span>
-              </article>
+              <Link
+                key={article.slug}
+                href={`/blog/${article.slug}`}
+                className="blog-card-link"
+              >
+                <article
+                  className={`blog-card ${index === 0 ? "blog-card-featured" : ""}`}
+                >
+                  <p className="blog-date">
+                    {article.category} · {article.readTime}
+                  </p>
+                  <h3 className="blog-title">{article.title}</h3>
+                  <p className="blog-excerpt">{article.excerpt}</p>
+                  <span className="read-more">Read Article</span>
+                </article>
+              </Link>
             ))}
           </FadeUp>
         </section>

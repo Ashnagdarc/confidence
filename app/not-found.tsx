@@ -56,8 +56,8 @@ export default function NotFound() {
             <Link href="/contact" className="not-found-card-link">
               Get in touch directly
             </Link>
-            <Link href="/#blog" className="not-found-card-link">
-              Browse insights previews
+            <Link href="/blog" className="not-found-card-link">
+              Browse the journal
             </Link>
           </div>
           <p className="not-found-card-note">

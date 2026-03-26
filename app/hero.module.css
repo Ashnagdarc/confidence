@@ -1,3 +1,85 @@
+@keyframes brandIntroGlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.brandIntro {
+  display: grid;
+  inset: 0;
+  place-items: center;
+  pointer-events: none;
+  position: fixed;
+  z-index: 1300;
+}
+
+.brandIntro::before {
+  background:
+    radial-gradient(circle at center, rgb(var(--white-rgb) / 0.84) 0%, rgb(var(--white-rgb) / 0.38) 33%, rgb(var(--white-rgb) / 0) 68%);
+  content: "";
+  inset: 0;
+  position: absolute;
+}
+
+.brandIntroInner {
+  display: grid;
+  gap: 0.85rem;
+  justify-items: center;
+  position: relative;
+}
+
+.brandIntroActive {
+  opacity: 1;
+  transition: opacity 0.28s ease;
+}
+
+.brandIntroActive .brandIntroInner {
+  animation: brandIntroGlow 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.brandIntroExit {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.brandIntroExit .brandIntroInner {
+  transform: translateY(-0.6rem) scale(0.94);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.brandIntroMark {
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  background: rgb(var(--white-rgb) / 0.7);
+  border: 1px solid rgb(var(--ink-rgb) / 0.06);
+  border-radius: 1.6rem;
+  box-shadow:
+    0 20px 50px rgb(var(--ink-rgb) / 0.08),
+    inset 0 1px 0 rgb(var(--white-rgb) / 0.88);
+  padding: 0.9rem;
+}
+
+.brandIntroImage {
+  display: block;
+  height: auto;
+  width: min(4.8rem, 18vw);
+}
+
+.brandIntroWordmark {
+  color: rgb(var(--ink-rgb) / 0.72);
+  font-family: var(--display);
+  font-size: clamp(0.96rem, 1.8vw, 1.18rem);
+  letter-spacing: 0.18em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
 :global(#home).heroSection {
   background: var(--surface-base);
   display: block;
@@ -50,17 +132,36 @@
   display: flex;
   inset: 0;
   justify-content: center;
+  opacity: 0.94;
   pointer-events: none;
   position: absolute;
+  transition: opacity 0.7s ease;
   z-index: 1;
 }
 
+.visualStageLoaded {
+  opacity: 1;
+}
+
 .portrait {
+  --portrait-transform: translate(-50%, -50%) translateZ(0);
+  filter: blur(18px) saturate(0.92);
   left: calc(50% + 26px);
+  opacity: 0.16;
   position: absolute;
   top: calc(50% + 171px);
-  transform: translate(-50%, -50%) translateZ(0);
+  transform: var(--portrait-transform) scale(0.96);
+  transition:
+    filter 1s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.7s ease,
+    transform 1.08s cubic-bezier(0.22, 1, 0.36, 1);
   width: min(135vw, 2040px);
+}
+
+.portraitLoaded {
+  filter: blur(0) saturate(1);
+  opacity: 1;
+  transform: var(--portrait-transform) scale(1);
 }
 
 .image {
@@ -71,6 +172,7 @@
 
 .imageBase {
   position: relative;
+  will-change: filter, opacity, transform;
   z-index: 1;
 }
 
@@ -104,36 +206,6 @@
   width: min(411px, calc(100vw - 5rem));
   position: absolute;
   z-index: 3;
-}
-
-.availabilityChip {
-  align-items: center;
-  border: 0.5px solid rgb(var(--ink-rgb) / 8%);
-  border-radius: var(--radius-sm);
-  color: rgb(var(--ink-rgb));
-  display: inline-flex;
-  font-family: var(--sans);
-  font-size: 0.75rem;
-  font-weight: 500;
-  gap: 0.72rem;
-  margin-bottom: 1rem;
-  min-height: 49.661px;
-  padding: 0.78rem 1rem;
-  width: min(460.743px, 100%);
-}
-
-.availabilityDot {
-  background:
-    radial-gradient(circle at 35% 35%, rgb(255 255 255 / 90%) 0%, rgb(255 255 255 / 0%) 38%),
-    radial-gradient(circle at center, rgb(92 194 128 / 100%) 0%, rgb(58 163 96 / 100%) 100%);
-  border-radius: 999px;
-  display: block;
-  flex: 0 0 auto;
-  height: 22px;
-  box-shadow:
-    0 0 0 1px rgb(58 163 96 / 18%),
-    0 8px 16px rgb(58 163 96 / 22%);
-  width: 22px;
 }
 
 .title {
@@ -210,11 +282,12 @@
 
   .portrait {
     align-self: flex-end;
+    --portrait-transform: none;
     margin: 0 auto;
     left: auto;
     position: relative;
     top: auto;
-    transform: none;
+    transform: var(--portrait-transform) scale(0.96);
     width: min(124%, 820px);
   }
 
@@ -342,22 +415,6 @@
     line-height: 1.56;
   }
 
-  .availabilityChip {
-    border-radius: 999px;
-    font-size: 0.84rem;
-    gap: 0.8rem;
-    margin-bottom: 0.95rem;
-    min-height: 3.4rem;
-    padding: 0.7rem 0.95rem;
-    width: fit-content;
-    max-width: 100%;
-  }
-
-  .availabilityDot {
-    height: 20px;
-    width: 20px;
-  }
-
   .mobileHeroCta {
     margin-bottom: 0.35rem;
     min-height: 3.7rem;
@@ -375,10 +432,26 @@
 
   .portrait {
     bottom: -0.55rem;
+    --portrait-transform: translateX(-50%);
     left: 50%;
     margin: 0;
     position: absolute;
-    transform: translateX(-50%);
+    transform: var(--portrait-transform) scale(0.96);
     width: min(171%, 730px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brandIntro {
+    display: none;
+  }
+
+  .visualStage,
+  .portrait,
+  .portraitLoaded {
+    filter: none;
+    opacity: 1;
+    transform: var(--portrait-transform) scale(1);
+    transition: none;
   }
 }

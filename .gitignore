@@ -3,5 +3,7 @@
 node_modules
 npm-debug.log*
 .DS_Store
+.env*
+!.env.example
 output/*.png
 images/Speaker.jpg

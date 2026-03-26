@@ -30,8 +30,9 @@ export const metadata: Metadata = {
   description:
     "Official website for Confidence Molade, Co-CEO of Eden Oasis Realty, speaker, podcaster, and leader.",
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
+    icon: [{ url: "/brand/logo-purple.png", type: "image/png" }],
+    shortcut: "/brand/logo-purple.png",
+    apple: "/brand/logo-purple.png",
   },
 };
 

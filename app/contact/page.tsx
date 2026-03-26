@@ -1,6 +1,4 @@
 "use client";
-
-import Link from "next/link";
 import {
   useEffect,
   useRef,
@@ -8,6 +6,8 @@ import {
   type ChangeEvent,
   type FormEvent,
 } from "react";
+
+import { SiteNavbar } from "@/components/site-navbar";
 
 import styles from "./contact.module.css";
 
@@ -18,15 +18,15 @@ const socials = [
   },
   {
     label: "Podcast",
-    href: "https://podcasts.apple.com/ng/podcast/the-kk-show-key-to-keys/id1761369506",
+    href: "https://www.edenoasisrealty.com/the-kk-show/",
   },
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/in/confidence-achodo-b82b65a4/",
+    href: "https://www.linkedin.com/in/confidence-achodo-b82b65a4?originalSubdomain=ng",
   },
   {
-    label: "Twitter / X",
-    href: "https://x.com/achodoconfidenc",
+    label: "Eden Oasis",
+    href: "https://www.edenoasisrealty.com/",
   },
 ];
 
@@ -73,12 +73,11 @@ function validateFormData(formData: ContactFormData): FormErrors {
 }
 
 export default function ContactPage() {
-  const [navScrolled, setNavScrolled] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [formStatus, setFormStatus] = useState<FormStatus>('idle');
   const [formData, setFormData] = useState<ContactFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
   const statusTimeoutRef = useRef<number | null>(null);
 
   const clearStatusTimeout = () => {
@@ -92,6 +91,7 @@ export default function ContactPage() {
     clearStatusTimeout();
     statusTimeoutRef.current = window.setTimeout(() => {
       setFormStatus('idle');
+      setStatusMessage('');
       statusTimeoutRef.current = null;
     }, delay);
   };
@@ -108,9 +108,10 @@ export default function ContactPage() {
 
     setFormData(nextFormData);
 
-    if (formStatus === 'success') {
+    if (formStatus !== 'loading' && statusMessage) {
       clearStatusTimeout();
       setFormStatus('idle');
+      setStatusMessage('');
     }
 
     if (hasSubmitted || formErrors[fieldName]) {
@@ -130,127 +131,67 @@ export default function ContactPage() {
 
     if (Object.keys(errors).length > 0) {
       setFormStatus('error');
+      setStatusMessage('Please correct the highlighted fields and try again.');
       queueStatusReset(3000);
       return;
     }
 
     setFormStatus('loading');
+    setStatusMessage('');
 
     try {
-      // Simulate API call (replace with actual API endpoint)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-      // In production, this would be:
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
+      const payload = (await response.json().catch(() => null)) as
+        | { message?: string }
+        | null;
+
+      if (!response.ok) {
+        throw new Error(
+          payload?.message ??
+            'Something went wrong while sending your message. Please email achodoconfidence@gmail.com directly.'
+        );
+      }
 
       setFormStatus('success');
       setFormErrors({});
       setHasSubmitted(false);
       setFormData(initialFormData);
+      setStatusMessage(
+        payload?.message ?? "Message sent successfully! I'll be in touch soon."
+      );
 
-      // Reset to idle after 5 seconds
       queueStatusReset(5000);
     } catch (error) {
       console.error('Form submission error:', error);
       setFormStatus('error');
+      setStatusMessage(
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong while sending your message. Please email achodoconfidence@gmail.com directly.'
+      );
       queueStatusReset(3000);
     }
   };
 
   useEffect(() => {
-    const closeMenuOnResize = () => {
-      if (window.innerWidth > 900) {
-        setMobileNavOpen(false);
-      }
-    };
-
-    const updateNav = () => {
-      setNavScrolled(window.scrollY > 24);
-    };
-
-    updateNav();
-    window.addEventListener("resize", closeMenuOnResize);
-    window.addEventListener("scroll", updateNav, { passive: true });
-
     return () => {
       clearStatusTimeout();
-      window.removeEventListener("resize", closeMenuOnResize);
-      window.removeEventListener("scroll", updateNav);
     };
   }, []);
 
   return (
     <>
-      <nav
-        className={`home-hero-nav ${navScrolled ? "scrolled" : ""} ${mobileNavOpen ? "mobile-open" : ""}`.trim()}
-      >
-        <Link href="/" className="nav-logo home-hero-wordmark">
-          Confidence Molade
-        </Link>
-        <ul className="nav-links">
-          <li>
-            <Link href="/#home">Home</Link>
-          </li>
-          <li>
-            <Link href="/#pillars">7 Pillars</Link>
-          </li>
-          <li>
-            <Link href="/#works">Works</Link>
-          </li>
-          <li>
-            <Link href="/#blog">Blog</Link>
-          </li>
-          <li>
-            <Link href="/contact">Contact</Link>
-          </li>
-        </ul>
-        <Link href="/contact" className="nav-cta">
-          Let&apos;s Connect
-        </Link>
-        <button
-          type="button"
-          className="mobile-nav-toggle"
-          aria-expanded={mobileNavOpen}
-          aria-controls="contact-mobile-nav-panel"
-          aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
-          onClick={() => setMobileNavOpen((open) => !open)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-        <div
-          id="contact-mobile-nav-panel"
-          className={`mobile-nav-panel ${mobileNavOpen ? "open" : ""}`.trim()}
-        >
-          <Link href="/#home" onClick={() => setMobileNavOpen(false)}>
-            Home
-          </Link>
-          <Link href="/#pillars" onClick={() => setMobileNavOpen(false)}>
-            7 Pillars
-          </Link>
-          <Link href="/#works" onClick={() => setMobileNavOpen(false)}>
-            Works
-          </Link>
-          <Link href="/#blog" onClick={() => setMobileNavOpen(false)}>
-            Blog
-          </Link>
-          <Link href="/contact" onClick={() => setMobileNavOpen(false)}>
-            Contact
-          </Link>
-          <Link
-            href="/contact"
-            className="mobile-nav-cta"
-            onClick={() => setMobileNavOpen(false)}
-          >
-            Let&apos;s Connect
-          </Link>
-        </div>
-      </nav>
+      <SiteNavbar
+        logoHref="/"
+        mobilePanelId="contact-mobile-nav-panel"
+        scrollThreshold={24}
+        sectionPrefix="/"
+      />
 
       <main className={styles.pageMain}>
         <section className={styles.shell}>
@@ -369,15 +310,15 @@ export default function ContactPage() {
                   )}
                 </div>
 
-                {formStatus === 'success' && (
+                {formStatus === 'success' && statusMessage && (
                   <div className={styles.successMessage} role="status" aria-live="polite">
-                    ✓ Message sent successfully! I&apos;ll be in touch soon.
+                    {statusMessage}
                   </div>
                 )}
 
-                {formStatus === 'error' && hasSubmitted && Object.keys(formErrors).length > 0 && (
+                {formStatus === 'error' && statusMessage && (
                   <div className={styles.errorMessage} role="alert">
-                    Please correct the highlighted fields and try again.
+                    {statusMessage}
                   </div>
                 )}
 
