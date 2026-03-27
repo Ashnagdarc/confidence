@@ -383,28 +383,17 @@
 
 @media (max-width: 640px) {
   :global(#home).heroSection::after {
-    background:
-      linear-gradient(
-        180deg,
-        rgb(var(--white-rgb) / 0%) 0%,
-        rgb(var(--white-rgb) / 22%) 56%,
-        rgb(var(--white-rgb) / 88%) 86%,
-        var(--surface-base) 100%
-      );
-    height: 3.35rem;
+    background: none;
+    height: 0;
   }
 
   :global(#home).heroSection::before {
-    bottom: -0.35rem;
-    filter: blur(18px);
-    height: 1.9rem;
-    left: 10%;
-    right: 10%;
+    display: none;
   }
 
   .shell {
     min-height: auto;
-    padding: 6.2rem 1rem 1.35rem;
+    padding: 6.2rem 1rem 0;
   }
 
   .award {
@@ -436,23 +425,24 @@
     align-items: flex-end;
     display: flex;
     bottom: auto;
-    height: clamp(20.5rem, 94vw, 25rem);
+    height: clamp(23rem, 100vw, 28rem);
     justify-content: center;
     left: auto;
     margin-top: 0.15rem;
+    margin-bottom: 0;
     overflow: hidden;
     position: relative;
     right: auto;
   }
 
   .portrait {
-    bottom: -1rem;
+    bottom: -0.35rem;
     --portrait-transform: translateX(-50%);
     left: 50%;
     margin: 0;
     position: absolute;
     transform: var(--portrait-transform) scale(1);
-    width: min(132%, 500px);
+    width: min(110%, 430px);
   }
 }
 

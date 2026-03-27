@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 
 import { SiteNavbar } from "@/components/site-navbar";
 import { LayeredStack } from "@/components/ui/layered-stack";
@@ -142,10 +142,23 @@ const pillarImages: Record<string, string> = {
 };
 
 const pillarImagePositions: Record<string, string> = {
+  "public-speaker": "center 18%",
+  "thought-leader": "center 16%",
   "real-estate-mogul": "42% center",
-  "style-icon": "center center",
-  "faith-based-leader": "center center",
-  "family-woman": "center center",
+  "content-creator": "70% 28%",
+  "style-icon": "center 14%",
+  "faith-based-leader": "center 16%",
+  "family-woman": "center 22%",
+};
+
+const pillarDesktopImageSizes: Record<string, string> = {
+  "public-speaker": "88% auto",
+  "thought-leader": "64% auto",
+  "real-estate-mogul": "88% auto",
+  "content-creator": "76% auto",
+  "style-icon": "56% auto",
+  "faith-based-leader": "66% auto",
+  "family-woman": "66% auto",
 };
 
 function FadeUp({ children, className = "" }: FadeUpProps) {
@@ -159,6 +172,9 @@ function FadeUp({ children, className = "" }: FadeUpProps) {
 export function HomePageClient({ articles }: HomePageClientProps) {
   const [brandIntroStage, setBrandIntroStage] =
     useState<BrandIntroStage>("hidden");
+  const [activeDesktopPillarSlug, setActiveDesktopPillarSlug] = useState<
+    string | null
+  >(null);
   const heroImageLoaded = true;
 
   useEffect(() => {
@@ -408,7 +424,113 @@ export function HomePageClient({ articles }: HomePageClientProps) {
             </div>
           </FadeUp>
 
-          <FadeUp>
+          <div
+            className="pillars-desktop-stack"
+            aria-label="Seven pillars desktop reveal"
+            onMouseLeave={() => setActiveDesktopPillarSlug(null)}
+          >
+            <div
+              className={`pillars-desktop-stage ${activeDesktopPillarSlug ? "is-active" : ""}`.trim()}
+            >
+              {pillars.map((pillar) => {
+                const isActive = activeDesktopPillarSlug === pillar.slug;
+                const backgroundStyle = {
+                  "--pillar-desktop-image": `url('${pillarImages[pillar.slug]}')`,
+                  "--pillar-desktop-position":
+                    pillarImagePositions[pillar.slug] ?? "center center",
+                  "--pillar-desktop-size":
+                    pillarDesktopImageSizes[pillar.slug] ?? "78% auto",
+                } as CSSProperties;
+
+                return (
+                  <div
+                    key={pillar.slug}
+                    className={`pillars-desktop-background ${isActive ? "is-active" : ""}`.trim()}
+                    style={backgroundStyle}
+                    aria-hidden="true"
+                  />
+                );
+              })}
+
+              <div className="pillars-desktop-scrim" aria-hidden="true" />
+
+              <div className="pillars-desktop-center">
+                {activeDesktopPillarSlug ? (
+                  (() => {
+                    const activePillar = pillars.find(
+                      (pillar) => pillar.slug === activeDesktopPillarSlug,
+                    );
+
+                    if (!activePillar) {
+                      return null;
+                    }
+
+                    return (
+                      <>
+                        <p className="section-eyebrow">
+                          Pillar {activePillar.number}
+                        </p>
+                        <h3 className="story-panel-title pillars-desktop-title">
+                          {activePillar.title}
+                        </h3>
+                        <p className="story-panel-body pillars-desktop-body">
+                          {activePillar.summary}
+                        </p>
+                        <Link
+                          href={`/pillars/${activePillar.slug}`}
+                          className="pillar-ghost-button pillars-desktop-link"
+                        >
+                          Open Pillar Story
+                        </Link>
+                      </>
+                    );
+                  })()
+                ) : (
+                  <>
+                    <p className="section-eyebrow">The Seven Pillars</p>
+                    <h3 className="story-panel-title pillars-desktop-title">
+                      Move across the pillars to reveal each world.
+                    </h3>
+                    <p className="story-panel-body pillars-desktop-body">
+                      Every title stays visible from the start. Hover any pillar
+                      to bring its image, summary, and story link into view.
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div
+              className="pillars-desktop-tabs"
+              role="tablist"
+              aria-label="Seven pillars"
+            >
+              {pillars.map((pillar) => {
+                const isActive = activeDesktopPillarSlug === pillar.slug;
+
+                return (
+                  <button
+                    key={pillar.slug}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    className={`pillars-desktop-tab ${isActive ? "is-active" : ""}`.trim()}
+                    onMouseEnter={() => setActiveDesktopPillarSlug(pillar.slug)}
+                    onFocus={() => setActiveDesktopPillarSlug(pillar.slug)}
+                  >
+                    <span className="pillars-desktop-tab-number">
+                      {pillar.number}
+                    </span>
+                    <span className="pillars-desktop-tab-title">
+                      {pillar.title}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <FadeUp className="pillars-mobile-stack">
             <LayeredStack className="pillars-stack" aria-label="Seven pillars image stack">
               {pillars.map((pillar) => (
                 <Link
