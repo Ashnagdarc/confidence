@@ -1,0 +1,218 @@
+.scope :global(.relative) {
+  position: relative;
+}
+
+.scope :global(.absolute) {
+  position: absolute;
+}
+
+.scope :global(.top-1\/2) {
+  top: 50%;
+}
+
+.scope :global(.left-1\/2) {
+  left: 50%;
+}
+
+.scope :global(.left-0) {
+  left: 0;
+}
+
+.scope :global(.right-0) {
+  right: 0;
+}
+
+.scope :global(.bottom-8) {
+  bottom: 2rem;
+}
+
+.scope :global(.inset-0) {
+  inset: 0;
+}
+
+.scope :global(.z-20) {
+  z-index: 20;
+}
+
+.scope :global(.z-40) {
+  z-index: 40;
+}
+
+.scope :global(.w-full) {
+  width: 100%;
+}
+
+.scope :global(.h-full) {
+  height: 100%;
+}
+
+.scope :global(.flex) {
+  display: flex;
+}
+
+.scope :global(.flex-col) {
+  flex-direction: column;
+}
+
+.scope :global(.items-center) {
+  align-items: center;
+}
+
+.scope :global(.justify-center) {
+  justify-content: center;
+}
+
+.scope :global(.overflow-hidden) {
+  overflow: hidden;
+}
+
+.scope :global(.bg-transparent) {
+  background: transparent;
+}
+
+.scope :global(.bg-black) {
+  background: rgb(15 13 10);
+}
+
+.scope :global(.rounded-xl) {
+  border-radius: 1.25rem;
+}
+
+.scope :global(.border) {
+  border-width: 1px;
+  border-style: solid;
+}
+
+.scope :global(.border-white\/10) {
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+.scope :global(.pointer-events-none) {
+  pointer-events: none;
+}
+
+.scope :global(.touch-none) {
+  touch-action: none;
+}
+
+.scope :global(.focus\:outline-none:focus) {
+  outline: none;
+}
+
+.scope :global(.cursor-grab) {
+  cursor: grab;
+}
+
+.scope :global(.cursor-grabbing) {
+  cursor: grabbing;
+}
+
+.scope :global(.cursor-pointer) {
+  cursor: pointer;
+}
+
+.scope :global(.preserve-3d) {
+  transform-style: preserve-3d;
+}
+
+.scope :global(.will-change-transform) {
+  will-change: transform;
+}
+
+.scope :global(.text-center) {
+  text-align: center;
+}
+
+.scope :global(.text-2xl) {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.scope :global(.text-sm) {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.scope :global(.font-semibold) {
+  font-weight: 600;
+}
+
+.scope :global(.font-medium) {
+  font-weight: 500;
+}
+
+.scope :global(.tracking-tight) {
+  letter-spacing: -0.03em;
+}
+
+.scope :global(.tracking-wide) {
+  letter-spacing: 0.08em;
+}
+
+.scope :global(.mt-1) {
+  margin-top: 0.25rem;
+}
+
+.scope :global(.text-foreground) {
+  color: rgb(248 244 238);
+}
+
+.scope :global(.text-foreground\/60) {
+  color: rgb(248 244 238 / 0.66);
+}
+
+.scope :global(.drop-shadow-md) {
+  filter: drop-shadow(0 8px 18px rgb(0 0 0 / 0.28));
+}
+
+.scope :global(.shadow-2xl) {
+  box-shadow: 0 24px 44px rgb(0 0 0 / 0.34);
+}
+
+.scope :global(.object-cover) {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  width: 100%;
+}
+
+.scope :global(.select-none) {
+  user-select: none;
+}
+
+.scope :global(.opacity-0) {
+  opacity: 0;
+}
+
+.scope :global(.opacity-40) {
+  opacity: 0.4;
+}
+
+.scope :global(.transition-opacity) {
+  transition-property: opacity;
+}
+
+.scope :global(.duration-300) {
+  transition-duration: 300ms;
+}
+
+.scope :global(.bottom-8) {
+  bottom: 1rem;
+}
+
+.scope :global(.z-40) {
+  display: none;
+}
+
+.scope :global(.bg-linear-to-tr) {
+  background: linear-gradient(135deg, rgb(255 255 255 / 0.12), transparent);
+}
+
+.scope :global(.bg-linear-to-b) {
+  background: linear-gradient(180deg, rgb(15 13 10 / 0.86), transparent);
+}
+
+.scope :global(.blur-\[1px\]) {
+  filter: blur(1px);
+}

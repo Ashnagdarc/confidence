@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { SiteNavbar } from "@/components/site-navbar";
+import {
+  CoverFlow,
+  type CoverFlowItem,
+} from "@/components/ui/coverflow";
 import { LayeredStack } from "@/components/ui/layered-stack";
 import heroPortrait from "@/images/logos/ANJDSC07558-Edit.png";
 import type { BlogPreview } from "@/lib/blog";
@@ -15,14 +19,6 @@ import heroStyles from "./hero.module.css";
 type Stat = {
   value: string;
   label: string;
-};
-
-type GalleryItem = {
-  caption: string;
-  alt: string;
-  imageSrc: string;
-  objectPosition?: string;
-  large?: boolean;
 };
 
 type WorkItem = {
@@ -59,27 +55,12 @@ const credentials = [
   "Lagos, Nigeria",
 ];
 
-const aboutGallery: GalleryItem[] = [
-  {
-    caption: "Leadership",
-    alt: "Confidence Molade standing in a pink tailored outfit",
-    imageSrc: "/about/leadership.jpg",
-    objectPosition: "center 18%",
-    large: true,
-  },
-  {
-    caption: "Industry",
-    alt: "Confidence Molade in an orange suit smiling in a modern office setting",
-    imageSrc: "/about/industry-v2.jpg",
-    objectPosition: "center 16%",
-  },
-  {
-    caption: "Presence",
-    alt: "Confidence Molade in a white suit against a red studio backdrop",
-    imageSrc: "/about/presence.jpg",
-    objectPosition: "center top",
-  },
-];
+const aboutPortrait = {
+  caption: "Leadership",
+  alt: "Confidence Molade standing in a pink tailored outfit",
+  imageSrc: "/pillars/ANJDSC08623-Edit.jpg",
+  objectPosition: "center 16%",
+};
 
 const works: WorkItem[] = [
   {
@@ -151,15 +132,12 @@ const pillarImagePositions: Record<string, string> = {
   "family-woman": "center 22%",
 };
 
-const pillarDesktopImageSizes: Record<string, string> = {
-  "public-speaker": "88% auto",
-  "thought-leader": "64% auto",
-  "real-estate-mogul": "88% auto",
-  "content-creator": "76% auto",
-  "style-icon": "56% auto",
-  "faith-based-leader": "66% auto",
-  "family-woman": "66% auto",
-};
+const pillarCoverflowItems: CoverFlowItem[] = pillars.map((pillar) => ({
+  id: pillar.slug,
+  image: pillarImages[pillar.slug],
+  title: pillar.title,
+  subtitle: pillar.shortSummary,
+}));
 
 function FadeUp({ children, className = "" }: FadeUpProps) {
   return (
@@ -174,7 +152,7 @@ export function HomePageClient({ articles }: HomePageClientProps) {
     useState<BrandIntroStage>("hidden");
   const [activeDesktopPillarSlug, setActiveDesktopPillarSlug] = useState<
     string | null
-  >(null);
+  >(pillars[0]?.slug ?? null);
   const heroImageLoaded = true;
 
   useEffect(() => {
@@ -200,6 +178,10 @@ export function HomePageClient({ articles }: HomePageClientProps) {
       observer.disconnect();
     };
   }, []);
+
+  const activeDesktopPillar =
+    pillars.find((pillar) => pillar.slug === activeDesktopPillarSlug) ??
+    pillars[0];
 
   useEffect(() => {
     let exitTimer: number | undefined;
@@ -381,26 +363,21 @@ export function HomePageClient({ articles }: HomePageClientProps) {
           </FadeUp>
 
           <FadeUp className="about-right">
-            <div className="about-image-grid">
-              {aboutGallery.map((item) => (
-                <figure
-                  key={item.caption}
-                  className={`about-img-block ${item.large ? "about-img-large" : ""}`.trim()}
-                >
-                  <Image
-                    src={item.imageSrc}
-                    alt={item.alt}
-                    className="about-img-media"
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, (max-width: 1100px) 44vw, 34vw"
-                    style={{ objectPosition: item.objectPosition ?? "center center" }}
-                  />
-                  <figcaption className="about-img-caption">
-                    {item.caption}
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
+            <figure className="about-feature-image">
+              <Image
+                src={aboutPortrait.imageSrc}
+                alt={aboutPortrait.alt}
+                className="about-feature-media"
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 900px) 82vw, (max-width: 1100px) 46vw, 40vw"
+                style={{
+                  objectPosition: aboutPortrait.objectPosition ?? "center center",
+                }}
+              />
+              <figcaption className="about-img-caption">
+                {aboutPortrait.caption}
+              </figcaption>
+            </figure>
           </FadeUp>
         </section>
 
@@ -424,111 +401,52 @@ export function HomePageClient({ articles }: HomePageClientProps) {
             </div>
           </FadeUp>
 
-          <div
-            className="pillars-desktop-stack"
-            aria-label="Seven pillars desktop reveal"
-            onMouseLeave={() => setActiveDesktopPillarSlug(null)}
-          >
-            <div
-              className={`pillars-desktop-stage ${activeDesktopPillarSlug ? "is-active" : ""}`.trim()}
-            >
-              {pillars.map((pillar) => {
-                const isActive = activeDesktopPillarSlug === pillar.slug;
-                const backgroundStyle = {
-                  "--pillar-desktop-image": `url('${pillarImages[pillar.slug]}')`,
-                  "--pillar-desktop-position":
-                    pillarImagePositions[pillar.slug] ?? "center center",
-                  "--pillar-desktop-size":
-                    pillarDesktopImageSizes[pillar.slug] ?? "78% auto",
-                } as CSSProperties;
-
-                return (
-                  <div
-                    key={pillar.slug}
-                    className={`pillars-desktop-background ${isActive ? "is-active" : ""}`.trim()}
-                    style={backgroundStyle}
-                    aria-hidden="true"
+          {activeDesktopPillar ? (
+            <FadeUp className="pillars-desktop-stack">
+              <div className="pillars-coverflow-frame">
+                <div className="pillars-coverflow-shell">
+                  <CoverFlow
+                    items={pillarCoverflowItems}
+                    itemWidth={420}
+                    itemHeight={520}
+                    stackSpacing={82}
+                    centerGap={240}
+                    rotation={50}
+                    initialIndex={pillars.findIndex(
+                      (pillar) => pillar.slug === activeDesktopPillar.slug,
+                    )}
+                    enableReflection={false}
+                    enableClickToSnap
+                    enableScroll
+                    scrollSensitivity={90}
+                    className="pillars-coverflow"
+                    onIndexChange={(index) => {
+                      const nextPillar = pillars[index];
+                      setActiveDesktopPillarSlug(nextPillar?.slug ?? null);
+                    }}
                   />
-                );
-              })}
+                </div>
 
-              <div className="pillars-desktop-scrim" aria-hidden="true" />
-
-              <div className="pillars-desktop-center">
-                {activeDesktopPillarSlug ? (
-                  (() => {
-                    const activePillar = pillars.find(
-                      (pillar) => pillar.slug === activeDesktopPillarSlug,
-                    );
-
-                    if (!activePillar) {
-                      return null;
-                    }
-
-                    return (
-                      <>
-                        <p className="section-eyebrow">
-                          Pillar {activePillar.number}
-                        </p>
-                        <h3 className="story-panel-title pillars-desktop-title">
-                          {activePillar.title}
-                        </h3>
-                        <p className="story-panel-body pillars-desktop-body">
-                          {activePillar.summary}
-                        </p>
-                        <Link
-                          href={`/pillars/${activePillar.slug}`}
-                          className="pillar-ghost-button pillars-desktop-link"
-                        >
-                          Open Pillar Story
-                        </Link>
-                      </>
-                    );
-                  })()
-                ) : (
-                  <>
-                    <p className="section-eyebrow">The Seven Pillars</p>
-                    <h3 className="story-panel-title pillars-desktop-title">
-                      Move across the pillars to reveal each world.
-                    </h3>
-                    <p className="story-panel-body pillars-desktop-body">
-                      Every title stays visible from the start. Hover any pillar
-                      to bring its image, summary, and story link into view.
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div
-              className="pillars-desktop-tabs"
-              role="tablist"
-              aria-label="Seven pillars"
-            >
-              {pillars.map((pillar) => {
-                const isActive = activeDesktopPillarSlug === pillar.slug;
-
-                return (
-                  <button
-                    key={pillar.slug}
-                    type="button"
-                    role="tab"
-                    aria-selected={isActive}
-                    className={`pillars-desktop-tab ${isActive ? "is-active" : ""}`.trim()}
-                    onMouseEnter={() => setActiveDesktopPillarSlug(pillar.slug)}
-                    onFocus={() => setActiveDesktopPillarSlug(pillar.slug)}
+                <div className="pillars-coverflow-copy">
+                  <p className="section-eyebrow">
+                    Pillar {activeDesktopPillar.number}
+                  </p>
+                  <h3 className="story-panel-title pillars-desktop-title">
+                    {activeDesktopPillar.title}
+                  </h3>
+                  <p className="story-panel-body pillars-desktop-body">
+                    {activeDesktopPillar.summary}
+                  </p>
+                  <Link
+                    href={`/pillars/${activeDesktopPillar.slug}`}
+                    className="pillar-ghost-button pillars-desktop-link"
                   >
-                    <span className="pillars-desktop-tab-number">
-                      {pillar.number}
-                    </span>
-                    <span className="pillars-desktop-tab-title">
-                      {pillar.title}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+                    Open Pillar Story
+                  </Link>
+                </div>
+              </div>
+            </FadeUp>
+          ) : null}
 
           <FadeUp className="pillars-mobile-stack">
             <LayeredStack className="pillars-stack" aria-label="Seven pillars image stack">
@@ -559,7 +477,9 @@ export function HomePageClient({ articles }: HomePageClientProps) {
               ))}
             </LayeredStack>
           </FadeUp>
+        </section>
 
+        <section id="philosophy" data-scroll-section>
           <FadeUp className="pillar-detail-section">
             <div className="pillar-detail-text">
               <p className="section-eyebrow">The Philosophy</p>
