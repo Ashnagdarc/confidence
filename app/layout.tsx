@@ -48,7 +48,7 @@ export default function RootLayout({
   } as CSSProperties;
 
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={karla.className} style={fontVariables}>
         {children}
         <SiteFooter />
